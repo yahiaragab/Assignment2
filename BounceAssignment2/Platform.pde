@@ -10,10 +10,15 @@ class Platform extends GameObject
   // Constructor!!
   // HAS NO RETURN TYPE
   // Name is always the same as the class
+  Platform()
+  {
+    super();
+  }
+  
+  
   Platform(float startX, float startY, float l)
   {
     super(startX, startY, l);
-    this.platformLength = l;
   }
   
 
