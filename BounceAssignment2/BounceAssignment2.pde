@@ -32,7 +32,7 @@ void setup()
 
   for (int i = 0; i < 5; i ++)
   {
-    Platform platform = new Platform( 
+    FixedPlatform platform = new FixedPlatform( 
                                       random(-50, width-border), (i * 100) + 100, random(100, 500)                                     
       );
     gameObjects.add(platform);
