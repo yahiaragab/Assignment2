@@ -13,7 +13,7 @@ abstract class GameObject
   float theta = 0.0f;
   float w;
   float halfW;
-  float speed = 5.0f;
+  float speed = 10.0f;
   color c; 
  
   GameObject()

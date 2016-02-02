@@ -7,9 +7,21 @@ class Ball extends GameObject
   char right;
   char fire;
   
-  float gravity = 6;
-  float bounce = 30;
+  float gravity = .98;
+  float velocityY = 0;
+  float velocityX = 0;
+  float bounce = -1;
+  
+  float ballWidth = 50;
   color ballColor = color(172, 89, 94);
+  
+  
+  float start;
+  float finish;
+  float jumpHeight = 250;
+  
+  boolean game = false;
+  
   
   // Constructor!!
   // HAS NO RETURN TYPE
@@ -21,44 +33,69 @@ class Ball extends GameObject
     
   }
   
-  Ball(char up, char left, char right, char fire, float startX, float startY, color c)
+  Ball(char up, char left, char right, char fire, float startX, float startY, float ballWidth, color c)
   {
-    super(startX, startY, 50);
+    super(startX, startY, ballWidth);
     this.up = up;
     this.left = left;
     this.right = right;
     this.fire = fire;
     this.c = c;
+    this.start = startY;
   }
 
-  int elapsed = 12;
+  
   
   void update()
   {
-//    //up
-//    if (keys[up])
-//    {
-//      pos.y -= speed;
-//    }      
-//    //left
-//    if (keys[left])
-//    {
-//      pos.x -= speed;
-//    }
-//    //right
-//    if (keys[right])
-//    {
-//      pos.x += speed;
-//    }      
-//    //down
-//    if (keys[fire])
-//    {
-//      pos.y += speed;
-//    }
     
-    pos.y += gravity;
     
-    jump();
+    //left
+    if (keys[left])
+    {
+      pos.x -= speed;
+    }
+    //right
+    if (keys[right])
+    {
+      pos.x += speed;
+    }      
+    
+    
+    //down
+    if (keys[fire])
+    {
+      game = true;
+      start = pos.y - 100;
+    }
+
+
+    //gravitational force pulling ball down
+    if (game)
+    {
+      velocityY += gravity;
+      pos.y += velocityY;
+      
+    }
+    
+//        if (pos.y > start - jumpHeight)
+//    {
+//      velocity *= bounce;
+//    }
+//    else
+//    {
+//      
+//    }
+//    jump(start);
+
+    
+    if (pos.y > height - ballWidth)
+    {
+      jump();
+      pos.y -= 100;
+    }
+    
+    
     
     //wrap around screen
     if (pos.x < 0)
@@ -76,24 +113,40 @@ class Ball extends GameObject
       pos.y = height;
     }
     
-    if (pos.y > height)
+    if (pos.y > height - ballWidth)
     {
-      pos.y = 0;
+      pos.y = height - ballWidth;
     }
-    elapsed ++;
+    
+    finish = start - jumpHeight;
+    println(finish + " " + start);
+    println("POSITION: " + pos.y);
+//          line( 0, finish, width, finish);
+
+    if (pos.y == finish)
+    {
+      jump();
+      line( 0, finish, width, finish);
+//      ballColor= color(0);
+      println("FINISH");
+    }
+    if (pos.y == start)
+    {
+      jump();
+//      ballColor = color(0, 0, 255);
+      println("START");
+    }
+
+
   }
   
   void jump()
   {
-    
-    if (pos.y > height - 50)
-    {
-      pos.y += bounce;
-    }
-    else
-    {
-    }
+    println("JUUUUUMP");
+    velocityY *= bounce;
+   
   }
+  
   
   void render()
   {
@@ -105,4 +158,9 @@ class Ball extends GameObject
     ellipse(0,0, w,w);    
     popMatrix();
   }   
+
+
+
 }
+
+
