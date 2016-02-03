@@ -1,3 +1,16 @@
+/*
+-Make a main GameObject abstract class?
+
+-Boundry should be changed to Platform, with a main abstract platform class, falling, mooving, and fixed subclasses
+-Mover should become Ball
+
+-Moving left and right has to work with a wind-like force, and not a change in velocity
+
+-Make it look good at the end
+
+
+*/
+
 import shiffman.box2d.*;
 import org.jbox2d.collision.shapes.*;
 import org.jbox2d.common.*;
@@ -19,12 +32,14 @@ Mover m;
 ArrayList<Boundary> boundaries;
 
 float grav;
+int numOfPlatforms;
 
 void setup()
 {
-  size(500, 500);
+  size(1000, 700);
   smooth();
-
+  
+  numOfPlatforms = 10;
   grav = -10;
     box2d = new Box2DProcessing(this);
   box2d.createWorld();
@@ -32,7 +47,7 @@ void setup()
   box2d.setGravity(0, grav);
   box2d.listenForCollisions();
   
-    m = new Mover(10, width/2, height - 250);
+    m = new Mover(20, width/2, height - 20);
 
   boundaries = new ArrayList<Boundary>();
 
@@ -42,14 +57,14 @@ void setup()
   //Y - h/2
   boundaries.add(new Boundary(width/2, height - 5, width, 10, 0)); 
 
-  for (int i = 0; i < 5; i++)
+  for (int i = 0; i < numOfPlatforms; i++)
   {
     float x, y, w, h, a;
-    a = 0;
+    a = random(-0.2, 0.2);
     h = 10;
-    w = random(50, 150);
-    y = ( (i * 80) + 80 ) - (h/2);
-    x = random(w/2, 300);
+    w = random(50, 300);
+    y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
+    x = random(w/2, 900);
     boundaries.add(new Boundary(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
   }
 }

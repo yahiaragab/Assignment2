@@ -10,7 +10,7 @@ class Mover {
   // We need to keep track of a Body and a radius
   Body body;
   float r;
-  color col = 150;
+  color col = color(172, 89, 94);
   
   Mover(float r, float x, float y) {
     this.r = r;
