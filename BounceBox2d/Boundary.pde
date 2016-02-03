@@ -13,7 +13,7 @@ class Boundary {
   float w;
   float h;
   // But we also have to make a body for box2d to know about it
-  Body b;
+  Body body;
 
  Boundary(float x,float y, float w, float h, float a) {
     this.x = x;
@@ -21,7 +21,32 @@ class Boundary {
     this.w = w;
     this.h = h;
 
-    // Define the polygon
+    //define the body
+    makeBody(x, y, w, h, a);
+    
+    //set user data
+    body.setUserData(this);
+  }
+
+  // Draw the boundary, it doesn't move so we don't have to ask the Body for location
+  void display() 
+  {
+    fill(0);
+    stroke(0);
+    strokeWeight(1);
+    rectMode(CENTER);
+    float a = body.getAngle();
+    pushMatrix();
+    translate(x,y);
+    rotate(-a);
+    rect(0,0,w,h);
+    popMatrix();
+  }
+
+  
+  void makeBody(float x, float y, float w, float h, float a)
+  {
+        // Define the polygon
     PolygonShape sd = new PolygonShape();
     // Figure out the box2d coordinates
     float box2dW = box2d.scalarPixelsToWorld(w/2);
@@ -35,26 +60,14 @@ class Boundary {
     bd.type = BodyType.STATIC;
     bd.angle = a;
     bd.position.set(box2d.coordPixelsToWorld(x,y));
-    b = box2d.createBody(bd);
+    body = box2d.createBody(bd);
     
     // Attached the shape to the body using a Fixture
-    b.createFixture(sd,1);
+    body.createFixture(sd,1);
+    
   }
 
-  // Draw the boundary, it doesn't move so we don't have to ask the Body for location
-  void display() {
-    fill(0);
-    stroke(0);
-    strokeWeight(1);
-    rectMode(CENTER);
-    float a = b.getAngle();
-    pushMatrix();
-    translate(x,y);
-    rotate(-a);
-    rect(0,0,w,h);
-    popMatrix();
-  }
 
-}
+}//end Class
 
 
