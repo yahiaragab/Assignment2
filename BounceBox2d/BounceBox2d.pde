@@ -109,17 +109,47 @@ void beginContact(Contact cp)
   Object o1 = b1.getUserData();
   Object o2 = b2.getUserData();
   
+  float jumpHeight = 15;
+  float movVel = jumpHeight;
+  boolean jumpCompleted = false;
+  
+  Mover m1 = (Mover) o2;
+  //Vectors for jumping
+  Vec2 jumpStart = box2d.getBodyPixelCoord(m1.body);
+  Vec2 jumpFinish = new Vec2(jumpStart.x, jumpStart.y - jumpHeight); 
+
+//  Vec2 jump = new Vec2(0, -40000);
+
   //User data doesn't determine TYPE of body
-  //If object 1 is a boundry, and object 2 is a mover, then
+  //If object 1 is a boundary, and object 2 is a mover, then
   if (o1.getClass() == Boundary.class && o2.getClass() == Mover.class)
   {
-    Mover m1 = (Mover) o2;
-    m1.jump();
+    
+//if Vec2 JumpFinish = box2d.getBodyPixelCoord(m1); , pos.y is < than Vec2 on JumpStart, dont change velocity
+    Vec2 ballCurrentPos = box2d.getBodyPixelCoord(m1.body);
+    
+          m1.body.setLinearVelocity(new Vec2(0, movVel));
+
+    if ( ballCurrentPos.y == jumpFinish.y )
+    {
+      jumpCompleted = true;
+    }
+    
+    if (jumpCompleted)
+    {
+      m1.jump();
+      movVel *= -1; 
+
+    }
+//    if ( Vec2 currentPos = box2d.getBodyPixelCoord(m1) > jumpFinish)
+//    {
+//      
+//    }
     
   }
   else   if (o1.getClass() == Mover.class && o2.getClass() == Boundary.class)
   {
-    Mover m1 = (Mover) o1;
+     m1 = (Mover) o1;
     m1.jump();
     
   }

@@ -25,35 +25,44 @@ class Mover {
 
   void update()
   {
-    Vec2 pos = box2d.getBodyPixelCoord(body);
+    //this gets the COORDINATES!!!
+//    Vec2 pos = box2d.getBodyPixelCoord(body);
+
+    float speed = 20;
+    float left = speed * -1;
+    float right = speed;
+    
     //left
     if (keys['A'])
     {
-      //        pos.x = 10;
-      body.setLinearVelocity(new Vec2(-10, grav));
+      //this removes half gravity 
+//      body.setLinearVelocity(new Vec2(-10, -5));
+//      Vec2 wind = new Vec2(left, 0);
+
+//      body.applyForce(wind);      
+      
     }
     //right
     if (keys['D'])
     {
-      //        pos.x += 10;
-      body.setLinearVelocity(new Vec2(10, grav));
+//      body.applyForce(wind);      
+      
     }
   }
-
-  //  void applyForce(Vec2 v) {
-  //    body.applyForce(v, body.getWorldCenter());
-  //  }
+  
+  
+  void applyForce(Vec2 force) 
+  {
+    Vec2 pos = body.getWorldCenter();
+    body.applyForce(force, pos);
+    println("YOOOO");
+  }
 
 
   void jump()
   {
   }
 
-  void glide()
-  {
-//    setLinearVelocity(new Vec2(40, 40));
-col = color(255, 0, 0);
-  }
 
   void display() {
     // We look at each body and get its screen position
