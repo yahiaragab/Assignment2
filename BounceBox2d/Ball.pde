@@ -5,66 +5,145 @@
 
 // Showing how to use applyForce() with box2d
 
-// Fixed Ball (this is redundant with Mover)
-
 class Ball {
-  
+
   // We need to keep track of a Body and a radius
+      
+
   Body body;
+  
   float r;
+  color col = color(172, 89, 94);
 
   Ball(float r, float x, float y) {
     this.r = r;
-    // Define a body
-    BodyDef bd = new BodyDef();
-    bd.type = BodyType.STATIC;  //MAKES GRAVITY NOT WORK
-    // Set its position
-    bd.position = box2d.coordPixelsToWorld(x,y);
-    body = box2d.world.createBody(bd);
 
-    // Make the body's shape a circle
-    CircleShape cs = new CircleShape();
-//    cs.m_radius = box2d.scalarPixelsToWorld(r);
-    
-    body.createFixture(cs,1);
+    // Define a body
+    makeBody(x, y, r);
+
+    //set user data for collisions
+    body.setUserData(this);
+  }
+
+  // This function removes the particle from the box2d world
+  void killBody() 
+  {
+    box2d.destroyBody(body);
+  }
+
+  // Is the particle ready for deletion?
+  boolean done() 
+  {
+    // Let's find the screen position of the particle
+    Vec2 pos = box2d.getBodyPixelCoord(body);
+    // Is it off the bottom of the screen?
+    if (pos.y > height) {
+      killBody();
+      return true;
+    }
+    return false;
+  }
+
+  void update()
+  {
+    //this gets the COORDINATES!!!
+    Vec2 pos = box2d.getBodyPixelCoord(body);
+
+    float speed = 20;
+    float left = speed * -1;
+    float right = speed;
+
+    //left
+    if (keys['A'])
+    {
+      //this removes half gravity 
+      //      body.setLinearVelocity(new Vec2(-10, -5));
+      //      Vec2 wind = new Vec2(left, 0);
+      body.setLinearVelocity(new Vec2(-30, 0));
+
+      //      body.applyForce(wind);
+    }
+    //right
+    if (keys['D'])
+    {
+      //      body.applyForce(wind);    
+      body.setLinearVelocity(new Vec2(30, 0));
+    }
+
+//trying to wrap screen
+//    if (bd.position.x > width)
+//    {
+//    bd.position = box2d.coordPixelsToWorld(0, bd.position.y);
+//    println("KHOSH GOWA ALAAA");
+//    }
 
   }
 
 
-//  // Formula for gravitational attraction
-//  // We are computing this in "world" coordinates
-//  // No need to convert to pixels and back
-//  Vec2 attract(Mover m) {
-//    float G = 100; // Strength of force
-//    // clone() makes us a copy
-//    Vec2 pos = body.getWorldCenter();    
-//    Vec2 moverPos = m.body.getWorldCenter();
-//    // Vector pointing from mover to attractor
-//    Vec2 force = pos.sub(moverPos);
-//    float distance = force.length();
-//    // Keep force within bounds
-//    distance = constrain(distance,1,5);
-//    force.normalize();
-//    // Note the attractor's mass is 0 because it's fixed so can't use that
-//    float strength = (G * 1 * m.body.m_mass) / (distance * distance); // Calculate gravitional force magnitude
-//    force.mulLocal(strength);         // Get force vector --> magnitude * direction
-//    return force;
-//  }
+
+  void applyForce(Vec2 force) 
+  {
+    Vec2 pos = body.getWorldCenter();
+    body.applyForce(force, pos);
+    println("YOOOO");
+  }
+
+
+  void jump()
+  {
+  }
+
 
   void display() {
     // We look at each body and get its screen position
     Vec2 pos = box2d.getBodyPixelCoord(body);
     // Get its angle of rotation
     float a = body.getAngle();
+
     pushMatrix();
-    translate(pos.x,pos.y);
+    translate(pos.x, pos.y);
     rotate(a);
-    fill(0);
+    fill(col);
     stroke(0);
     strokeWeight(1);
-    rect(0,0,r*2,r);
+    ellipse(0, 0, r*2, r*2);
+    // Let's add a line so we can see the rotation
+    line( -r, 0, r, 0);
+    line( 0, -r, 0, r);
     popMatrix();
-  }
-}
+    
 
+  }
+
+
+  void makeBody(float x, float y, float r) 
+  {
+    BodyDef bd = new BodyDef();
+    bd.type = BodyType.DYNAMIC;
+
+    // Set its position
+    bd.position = box2d.coordPixelsToWorld(x, y);
+    body = box2d.world.createBody(bd);
+
+    //set user data for collision listening
+
+
+    // Make the body's shape a circle
+    CircleShape cs = new CircleShape();
+    cs.m_radius = box2d.scalarPixelsToWorld(r);
+
+    // Define a fixture
+    FixtureDef fd = new FixtureDef();
+    fd.shape = cs;
+    // Parameters that affect physics
+    fd.density = 1;
+    fd.friction = 0.3;
+    fd.restitution = 0.5;
+
+    body.createFixture(fd);
+
+    //      body.setLinearVelocity(new Vec2(0, 0));
+    body.setAngularVelocity(random(-1, 1));
+  }
+}//end Class
 

@@ -2,7 +2,7 @@
 -Make a main GameObject abstract class?
 
 -Boundry should be changed to Platform, with a main abstract platform class, falling, mooving, and fixed subclasses
--Mover should become Ball
+-Ball should become Ball
 
 -Moving left and right has to work with a wind-like force, and not a change in velocity
 
@@ -25,11 +25,12 @@ Box2DProcessing box2d;
 boolean[] keys = new boolean[512];
 
 
-Ball ball;
-Mover m;
+Ball m;
 
 // A list we'll use to track fixed objects
 ArrayList<Boundary> boundaries;
+ArrayList<Token> tokens;
+
 
 float grav;
 int numOfPlatforms;
@@ -47,7 +48,7 @@ void setup()
   box2d.setGravity(0, grav);
   box2d.listenForCollisions();
   
-    m = new Mover(20, width/2, height - 20);
+    m = new Ball(20, width/2, height - 20);
 
   boundaries = new ArrayList<Boundary>();
 
@@ -66,6 +67,7 @@ void setup()
     y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
     x = random(w/2, 900);
     boundaries.add(new Boundary(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
+//    tokens.add(new Token(x, y + 10)); //X is width/2 not 0 because object is dealt with from its CENTER
   }
 }
 
@@ -89,7 +91,12 @@ void draw()
 
   m.display();
   m.update();
+
+
+
 }
+
+
 
 //cp tells which fixtures collided
 //a fixture is the entity that attaches the SHAPE to the BODY. 
@@ -113,7 +120,7 @@ void beginContact(Contact cp)
   float movVel = jumpHeight;
   boolean jumpCompleted = false;
   
-  Mover m1 = (Mover) o2;
+  Ball m1 = (Ball) o2;
   //Vectors for jumping
   Vec2 jumpStart = box2d.getBodyPixelCoord(m1.body);
   Vec2 jumpFinish = new Vec2(jumpStart.x, jumpStart.y - jumpHeight); 
@@ -121,8 +128,10 @@ void beginContact(Contact cp)
 //  Vec2 jump = new Vec2(0, -40000);
 
   //User data doesn't determine TYPE of body
-  //If object 1 is a boundary, and object 2 is a mover, then
-  if (o1.getClass() == Boundary.class && o2.getClass() == Mover.class)
+  //If object 1 is a boundary, and object 2 is a Ball, then
+  if (o1.getClass() == Boundary.class && o2.getClass() == Ball.class
+  ||
+  o1.getClass() == Ball.class && o2.getClass() == Boundary.class)
   {
     
 //if Vec2 JumpFinish = box2d.getBodyPixelCoord(m1); , pos.y is < than Vec2 on JumpStart, dont change velocity
@@ -147,16 +156,11 @@ void beginContact(Contact cp)
 //    }
     
   }
-  else   if (o1.getClass() == Mover.class && o2.getClass() == Boundary.class)
-  {
-     m1 = (Mover) o1;
-    m1.jump();
-    
-  }
+
   
   
 //  ||
-//      o2.getClass() == Mover.class &&
+//      o2.getClass() == Ball.class &&
 //      o1.getClass() == Boundary.class
   
   
