@@ -29,7 +29,7 @@ Ball m;
 
 // A list we'll use to track fixed objects
 ArrayList<Boundary> boundaries;
-ArrayList<ExtraTime> tokens;
+ArrayList<Token> tokens;
 
 
 float grav;
@@ -51,12 +51,12 @@ void setup()
   m = new Ball(20, width/2, height - 20);
 
   boundaries = new ArrayList<Boundary>();
-  tokens = new ArrayList<ExtraTime>();
+  tokens = new ArrayList<Token>();
 
   //  ball = new Ball(50, width/2, height/2);r  //x, y, w, h, angle
   //X is Object's width/2 not 0 because object is dealt with from its CENTER
   //Y - h/2
-  boundaries.add(new Boundary(width/2, height - 5, width, 10, 0)); 
+  boundaries.add(new Boundary(width/2, height - 5, width, 5, 0));   //floor
 
   for (int i = 0; i < numOfPlatforms; i++)
   {
@@ -67,7 +67,28 @@ void setup()
     y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
     x = random(w/2, 900);
     boundaries.add(new Boundary(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
-    tokens.add(new ExtraTime(x, y - 30, 30.0f, 30.0f, a)); //X is width/2 not 0 because object is dealt with from its CENTER
+    
+      int collectable = (int) random(0, 3);
+
+//      ExtraToken extra = null;
+//      LessToken less = null;
+
+      switch (collectable)
+      {
+        case 0:
+          break;
+        case 1:
+          tokens.add(new ExtraTime(x, y - 10, w, h, a));
+          break;
+        case 2:
+//          inst = new LessTime(x, y - 10, w, h, a);
+          tokens.add(new LessTime(x, y - 10, w, h, a));
+
+          break;
+      }
+      
+           //X is width/2 not 0 because object is dealt with from its CENTER
+
   }
 }
 float speed = 1000;
@@ -93,11 +114,12 @@ void draw()
   for (Boundary wall : boundaries) 
   {
     wall.display();
+    
   }
 
-  for (ExtraTime wall : tokens) 
+  for (int i = 0; i < numOfPlatforms; i++) 
   {
-    wall.display();
+    tokens.get(i).display();
   }
 
   m.display();

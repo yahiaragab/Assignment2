@@ -1,12 +1,11 @@
-//Power up that gives more seconds
+//Power up that decreases time remaining
 
-class ExtraTime extends Token
+class LessTime extends Token
 {
 
   // A boundary is a simple rectangle with x,y,width,and height
-
   
-  ExtraTime(float x, float y, float w, float h, float a) 
+  LessTime(float x, float y, float w, float h, float a) 
   {
     super(x, y, w, h, a);
     body.setUserData(this);
@@ -16,7 +15,7 @@ class ExtraTime extends Token
   // Draw the boundary, it doesn't move so we don't have to ask the Body for location
   void display() 
   {
-    col = color(230, 200, 0);
+    col = color(219,112,147);
     super.display(col);
     
   }
