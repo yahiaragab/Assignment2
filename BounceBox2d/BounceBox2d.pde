@@ -26,6 +26,7 @@ boolean[] keys = new boolean[512];
 
 
 Ball m;
+Floor floor;
 
 // A list we'll use to track fixed objects
 ArrayList<Boundary> boundaries;
@@ -40,7 +41,7 @@ void setup()
   size(1000, 700);
   smooth();
 
-  numOfPlatforms = 10;
+  numOfPlatforms = 7;
   grav = -10;
   box2d = new Box2DProcessing(this);
   box2d.createWorld();
@@ -49,6 +50,7 @@ void setup()
   box2d.listenForCollisions();
 
   m = new Ball(20, width/2, height - 20);
+  floor = new Floor(width/2, height - 5, width, 10, 0);
 
   boundaries = new ArrayList<Boundary>();
   extratime = new ArrayList<ExtraTime>();
@@ -57,9 +59,19 @@ void setup()
   //  ball = new Ball(50, width/2, height/2);r  //x, y, w, h, angle
   //X is Object's width/2 not 0 because object is dealt with from its CENTER
   //Y - h/2
-  boundaries.add(new Boundary(width/2, height - 5, width, 5, 0));   //floor
-
+//  boundaries.add(new Boundary(width/2, height - 5, width, 10, 0));   //floor
   
+  generateMap();
+  
+}
+float speed = 1000;
+
+float left = speed * -1;
+
+float right = speed;
+
+void generateMap()
+{
   for (int i = 0; i < numOfPlatforms; i++)
   {
     float x, y, w, h, a;
@@ -70,7 +82,7 @@ void setup()
     x = random(w/2, 900);
     boundaries.add(new Boundary(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
 
-    int collectable = (int) random(0, 3);
+    int collectable = (int) random(0, 5);
     float tokenFloat = h + 15;
     float tokenW = 30;
     float tokenH = 30;
@@ -79,25 +91,39 @@ void setup()
 
     switch (collectable)
     {
-    case 0:
-      break;
-    case 1:
-      extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
-      break;
-    case 2:
-      lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
+      case 0:
+        extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
+        break;
+      case 1:
+        lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
+        break;
+      default:
+        break;
+    }//end switch
 
-      break;
-    }
+  }//end for
+  
+}//end generateMap()
 
-    //X is width/2 not 0 because object is dealt with from its CENTER
+void clearMap()
+{
+  
+  for (Boundary b : boundaries)
+  {
+    b.killBody();
   }
-}
-float speed = 1000;
-
-float left = speed * -1;
-
-float right = speed;
+  
+  for (ExtraTime extra : extratime) 
+  {
+    extra.killBody();
+  }
+  
+  for (LessTime less : lesstime) 
+  {
+    less.killBody();
+  }
+  
+}//end clearMap()
 
 
 void draw()
@@ -117,19 +143,21 @@ void draw()
   {
     wall.display();
   }
-
-  for (int i = 0; i < extratime.size(); i++) 
+  
+  for (ExtraTime extra : extratime) 
   {
-    extratime.get(i).display();
+    extra.display();
   }
   
-    for (int i = 0; i < lesstime.size(); i++) 
+  for (LessTime less : lesstime) 
   {
-    lesstime.get(i).display();
+    less.display();
   }
 
   m.display();
   m.update();
+  floor.display();
+  
   if (keys['A'])
   {
     Vec2 wind = new Vec2(left, -50);
@@ -151,6 +179,7 @@ void draw()
 float jumpHeight = 20;
 float movVel = jumpHeight;
 boolean jumpCompleted = false;
+
 //cp tells which fixtures collided
 //a fixture is the entity that attaches the SHAPE to the BODY. 
 //SHAPE is the thing that has geometry. TWO SHAPES come in contact with each other 
@@ -171,11 +200,11 @@ void beginContact(Contact cp)
 
 
 
-  Ball m1 = (Ball) o2;
-  //Vectors for jumping 
-  //have to be inside if
-  Vec2 jumpStart = box2d.getBodyPixelCoord(m1.body);
-  Vec2 jumpFinish = new Vec2(jumpStart.x, jumpStart.y - jumpHeight); 
+  
+//  //Vectors for jumping 
+//  //have to be inside if
+//  Vec2 jumpStart = box2d.getBodyPixelCoord(m1.body);
+//  Vec2 jumpFinish = new Vec2(jumpStart.x, jumpStart.y - jumpHeight); 
 
   //  Vec2 jump = new Vec2(0, -40000);
 
@@ -185,6 +214,7 @@ void beginContact(Contact cp)
     ||
     o1.getClass() == Ball.class && o2.getClass() == Boundary.class)
   {
+    Ball m1 = (Ball) o2;
 
     //if Vec2 JumpFinish = box2d.getBodyPixelCoord(m1); , pos.y is < than Vec2 on JumpStart, dont change velocity
     Vec2 ballCurrentPos = box2d.getBodyPixelCoord(m1.body);
@@ -194,10 +224,10 @@ void beginContact(Contact cp)
     m1.jump();
 
 
-    if ( ballCurrentPos.y == jumpFinish.y )
-    {
-      jumpCompleted = true;
-    }
+//    if ( ballCurrentPos.y == jumpFinish.y )
+//    {
+//      jumpCompleted = true;
+//    }
 
     //    if (jumpCompleted)
     //    {
@@ -209,8 +239,26 @@ void beginContact(Contact cp)
     //    {
     //      
     //    }
+    
+    clearMap();
+    generateMap();
+    
+  }//end if ball and platform collision 
+  
+  
+  if (o1.getClass() == Floor.class && o2.getClass() == Ball.class
+    ||
+    o1.getClass() == Ball.class && o2.getClass() == Floor.class)
+  {
+    Ball m1 = (Ball) o2;
+    
+    m1.jump();   
+    
   }
-}
+  
+  
+  
+}//end beginContact()
 
 void endContact()
 {

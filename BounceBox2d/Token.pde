@@ -9,6 +9,7 @@ class Token {
   float h = 30;
   float a;
   color col;
+  
   // But we also have to make a body for box2d to know about it
   Body body;
 
@@ -26,6 +27,11 @@ class Token {
     body.setUserData(this);
   }
 
+  // This function removes the particle from the box2d world
+  void killBody() 
+  {
+    box2d.destroyBody(body);
+  }
 
   // Draw the boundary, it doesn't move so we don't have to ask the Body for location
   void display(color col) 

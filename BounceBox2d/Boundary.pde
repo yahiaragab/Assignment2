@@ -1,5 +1,4 @@
 // A fixed boundary class (now incorporates angle)
-
 class Boundary {
 
   // A boundary is a simple rectangle with x,y,width,and height
@@ -10,7 +9,8 @@ class Boundary {
   // But we also have to make a body for box2d to know about it
   Body body;
 
- Boundary(float x,float y, float w, float h, float a) {
+ Boundary(float x,float y, float w, float h, float a) 
+ {
     this.x = x;
     this.y = y;
     this.w = w;
@@ -22,6 +22,14 @@ class Boundary {
     //set user data
     body.setUserData(this);
   }
+
+  // This function removes the particle from the box2d world
+  void killBody() 
+  {
+    box2d.destroyBody(body);
+  }
+
+
 
   // Draw the boundary, it doesn't move so we don't have to ask the Body for location
   void display() 
