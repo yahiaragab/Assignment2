@@ -29,8 +29,8 @@ Ball m;
 
 // A list we'll use to track fixed objects
 ArrayList<Boundary> boundaries;
-ArrayList<Token> tokens;
-
+ArrayList<ExtraTime> extratime;
+ArrayList<LessTime> lesstime;
 
 float grav;
 int numOfPlatforms;
@@ -51,13 +51,15 @@ void setup()
   m = new Ball(20, width/2, height - 20);
 
   boundaries = new ArrayList<Boundary>();
-  tokens = new ArrayList<Token>();
+  extratime = new ArrayList<ExtraTime>();
+  lesstime = new ArrayList<LessTime>();
 
   //  ball = new Ball(50, width/2, height/2);r  //x, y, w, h, angle
   //X is Object's width/2 not 0 because object is dealt with from its CENTER
   //Y - h/2
   boundaries.add(new Boundary(width/2, height - 5, width, 5, 0));   //floor
 
+  
   for (int i = 0; i < numOfPlatforms; i++)
   {
     float x, y, w, h, a;
@@ -67,28 +69,28 @@ void setup()
     y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
     x = random(w/2, 900);
     boundaries.add(new Boundary(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
-    
-      int collectable = (int) random(0, 3);
 
-//      ExtraToken extra = null;
-//      LessToken less = null;
+    int collectable = (int) random(0, 3);
+    float tokenFloat = h + 15;
+    float tokenW = 30;
+    float tokenH = 30;
+    //      ExtraToken extra = null;
+    //      LessToken less = null;
 
-      switch (collectable)
-      {
-        case 0:
-          break;
-        case 1:
-          tokens.add(new ExtraTime(x, y - 10, w, h, a));
-          break;
-        case 2:
-//          inst = new LessTime(x, y - 10, w, h, a);
-          tokens.add(new LessTime(x, y - 10, w, h, a));
+    switch (collectable)
+    {
+    case 0:
+      break;
+    case 1:
+      extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
+      break;
+    case 2:
+      lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
 
-          break;
-      }
-      
-           //X is width/2 not 0 because object is dealt with from its CENTER
+      break;
+    }
 
+    //X is width/2 not 0 because object is dealt with from its CENTER
   }
 }
 float speed = 1000;
@@ -114,12 +116,16 @@ void draw()
   for (Boundary wall : boundaries) 
   {
     wall.display();
-    
   }
 
-  for (int i = 0; i < numOfPlatforms; i++) 
+  for (int i = 0; i < extratime.size(); i++) 
   {
-    tokens.get(i).display();
+    extratime.get(i).display();
+  }
+  
+    for (int i = 0; i < lesstime.size(); i++) 
+  {
+    lesstime.get(i).display();
   }
 
   m.display();
@@ -135,7 +141,7 @@ void draw()
   }
   if (keys['D'])
   {
-    
+
     Vec2 wind = new Vec2(right, -50);
     m.applyForce(wind);
   }
@@ -143,8 +149,8 @@ void draw()
 
 
 float jumpHeight = 20;
-  float movVel = jumpHeight;
-  boolean jumpCompleted = false;
+float movVel = jumpHeight;
+boolean jumpCompleted = false;
 //cp tells which fixtures collided
 //a fixture is the entity that attaches the SHAPE to the BODY. 
 //SHAPE is the thing that has geometry. TWO SHAPES come in contact with each other 
@@ -163,7 +169,7 @@ void beginContact(Contact cp)
   Object o1 = b1.getUserData();
   Object o2 = b2.getUserData();
 
-  
+
 
   Ball m1 = (Ball) o2;
   //Vectors for jumping 
@@ -186,7 +192,7 @@ void beginContact(Contact cp)
     //m.applyForce(jump);
 
     m1.jump();
-    
+
 
     if ( ballCurrentPos.y == jumpFinish.y )
     {
@@ -220,5 +226,4 @@ void keyReleased()
 {
   keys[keyCode] = false;
 }
-
 
