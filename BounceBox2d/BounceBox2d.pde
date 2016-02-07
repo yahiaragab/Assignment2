@@ -1,15 +1,15 @@
 /*
 -Make a main GameObject abstract class?
-
--Boundry should be changed to Platform, with a main abstract platform class, falling, mooving, and fixed subclasses
--Ball should become Ball
-
--Moving left and right has to work with a wind-like force, and not a change in velocity
-
--Make it look good at the end
-
-
-*/
+ 
+ -Boundry should be changed to Platform, with a main abstract platform class, falling, mooving, and fixed subclasses
+ -Ball should become Ball
+ 
+ -Moving left and right has to work with a wind-like force, and not a change in velocity
+ 
+ -Make it look good at the end
+ 
+ 
+ */
 
 import shiffman.box2d.*;
 import org.jbox2d.collision.shapes.*;
@@ -39,19 +39,19 @@ void setup()
 {
   size(1000, 700);
   smooth();
-  
+
   numOfPlatforms = 10;
   grav = -10;
-    box2d = new Box2DProcessing(this);
+  box2d = new Box2DProcessing(this);
   box2d.createWorld();
   // No global gravity force
   box2d.setGravity(0, grav);
   box2d.listenForCollisions();
-  
-    m = new Ball(20, width/2, height - 20);
+
+  m = new Ball(20, width/2, height - 20);
 
   boundaries = new ArrayList<Boundary>();
-
+  tokens = new ArrayList<Token>();
 
   //  ball = new Ball(50, width/2, height/2);r  //x, y, w, h, angle
   //X is Object's width/2 not 0 because object is dealt with from its CENTER
@@ -67,9 +67,14 @@ void setup()
     y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
     x = random(w/2, 900);
     boundaries.add(new Boundary(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
-//    tokens.add(new Token(x, y + 10)); //X is width/2 not 0 because object is dealt with from its CENTER
+    tokens.add(new Token(x, y - 30, 30.0f, 30.0f, a)); //X is width/2 not 0 because object is dealt with from its CENTER
   }
 }
+float speed = 1000;
+
+float left = speed * -1;
+
+float right = speed;
 
 
 void draw()
@@ -85,15 +90,32 @@ void draw()
   //
   //  m.applyForce(force);
 
-  for (Boundary wall : boundaries) {
+  for (Boundary wall : boundaries) 
+  {
+    wall.display();
+  }
+
+  for (Token wall : tokens) 
+  {
     wall.display();
   }
 
   m.display();
   m.update();
+  if (keys['A'])
+  {
+    Vec2 wind = new Vec2(left, -100);
+    //this removes half gravity 
+    //      body.setLinearVelocity(new Vec2(-10, -5));
+    //      body.setLinearVelocity(new Vec2(-15, -10));
 
-
-
+    m.applyForce(wind);
+  }
+  if (keys['D'])
+  {
+    Vec2 wind = new Vec2(right, -50);
+    m.applyForce(wind);
+  }
 }
 
 
@@ -107,68 +129,62 @@ void beginContact(Contact cp)
   //which fixtures have collided?
   Fixture f1 = cp.getFixtureA();
   Fixture f2 = cp.getFixtureB();
-  
+
   //which body are you attached to?
   Body b1 = f1.getBody();
   Body b2 = f2.getBody();
-  
+
   //which "Particle" is associated with that body? //ASSIGN USER DATA. setUserData(), getUserData() 
   Object o1 = b1.getUserData();
   Object o2 = b2.getUserData();
-  
-  float jumpHeight = 15;
+
+  float jumpHeight = 20;
   float movVel = jumpHeight;
   boolean jumpCompleted = false;
-  
+
   Ball m1 = (Ball) o2;
-  //Vectors for jumping
+  //Vectors for jumping 
+  //have to be inside if
   Vec2 jumpStart = box2d.getBodyPixelCoord(m1.body);
   Vec2 jumpFinish = new Vec2(jumpStart.x, jumpStart.y - jumpHeight); 
 
-//  Vec2 jump = new Vec2(0, -40000);
+  //  Vec2 jump = new Vec2(0, -40000);
 
   //User data doesn't determine TYPE of body
   //If object 1 is a boundary, and object 2 is a Ball, then
   if (o1.getClass() == Boundary.class && o2.getClass() == Ball.class
-  ||
-  o1.getClass() == Ball.class && o2.getClass() == Boundary.class)
+    ||
+    o1.getClass() == Ball.class && o2.getClass() == Boundary.class)
   {
-    
-//if Vec2 JumpFinish = box2d.getBodyPixelCoord(m1); , pos.y is < than Vec2 on JumpStart, dont change velocity
+
+    //if Vec2 JumpFinish = box2d.getBodyPixelCoord(m1); , pos.y is < than Vec2 on JumpStart, dont change velocity
     Vec2 ballCurrentPos = box2d.getBodyPixelCoord(m1.body);
-    
-          m1.body.setLinearVelocity(new Vec2(0, movVel));
+    //          Vec2 jump = new Vec2(0, 10000);
+    //m.applyForce(jump);
+
+
+    m1.body.setLinearVelocity(new Vec2(0, movVel));
 
     if ( ballCurrentPos.y == jumpFinish.y )
     {
       jumpCompleted = true;
     }
-    
-    if (jumpCompleted)
-    {
-      m1.jump();
-      movVel *= -1; 
 
-    }
-//    if ( Vec2 currentPos = box2d.getBodyPixelCoord(m1) > jumpFinish)
-//    {
-//      
-//    }
-    
+    //    if (jumpCompleted)
+    //    {
+    //      m1.jump();
+    //      movVel *= -1; 
+    //
+    //    }
+    //    if ( Vec2 currentPos = box2d.getBodyPixelCoord(m1) > jumpFinish)
+    //    {
+    //      
+    //    }
   }
-
-  
-  
-//  ||
-//      o2.getClass() == Ball.class &&
-//      o1.getClass() == Boundary.class
-  
-  
 }
 
 void endContact()
 {
-  
 }
 
 
@@ -181,7 +197,5 @@ void keyReleased()
 {
   keys[keyCode] = false;
 }
-
-
 
 

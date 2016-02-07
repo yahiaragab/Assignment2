@@ -16,18 +16,19 @@ class Token {
   // But we also have to make a body for box2d to know about it
   Body body;
 
- Token(float x,float y) {
+ Token(float x,float y, float w, float h, float a) {
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
 
     //define the body
-    makeBody(x, y);
+    makeBody(x, y, w, h, a);
     
     //set user data
     body.setUserData(this);
   }
+
 
   // Draw the boundary, it doesn't move so we don't have to ask the Body for location
   void display() 
@@ -47,7 +48,7 @@ class Token {
   }
 
   
-  void makeBody(float x, float y)
+  void makeBody(float x, float y, float w, float h, float a)
   {
         // Define the polygon
     PolygonShape sd = new PolygonShape();
@@ -61,13 +62,13 @@ class Token {
     // Create the body
     BodyDef bd = new BodyDef();
     bd.type = BodyType.STATIC;
-
+    bd.angle = a;
     bd.position.set(box2d.coordPixelsToWorld(x,y));
     body = box2d.createBody(bd);
     
     // Attached the shape to the body using a Fixture
     body.createFixture(sd,1);
-    
+        body.setAngularVelocity(20);
   }
 
 

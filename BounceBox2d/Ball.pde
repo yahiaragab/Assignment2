@@ -8,12 +8,13 @@
 class Ball {
 
   // We need to keep track of a Body and a radius
-      
+
 
   Body body;
-  
+
   float r;
-  color col = color(172, 89, 94);
+  //  color col = color(172, 89, 94);
+  color col = color(220, 70, 60);
 
   Ball(float r, float x, float y) {
     this.r = r;
@@ -49,34 +50,25 @@ class Ball {
     //this gets the COORDINATES!!!
     Vec2 pos = box2d.getBodyPixelCoord(body);
 
-    float speed = 20;
-    float left = speed * -1;
-    float right = speed;
 
     //left
-    if (keys['A'])
-    {
-      //this removes half gravity 
-      //      body.setLinearVelocity(new Vec2(-10, -5));
-      //      Vec2 wind = new Vec2(left, 0);
-      body.setLinearVelocity(new Vec2(-30, 0));
 
-      //      body.applyForce(wind);
-    }
     //right
-    if (keys['D'])
+
+
+    //trying to wrap screen
+    if (pos.x > width)
     {
-      //      body.applyForce(wind);    
-      body.setLinearVelocity(new Vec2(30, 0));
+      //      pos.set(box2d.coordPixelsToWorld(0, 200));
+      body.setTransform( new Vec2( -50, 0 ), 0 );
+      println("KHOSH GOWA ALAAA");
     }
-
-//trying to wrap screen
-//    if (bd.position.x > width)
-//    {
-//    bd.position = box2d.coordPixelsToWorld(0, bd.position.y);
-//    println("KHOSH GOWA ALAAA");
-//    }
-
+    if (pos.x < 0)
+    {
+      //      pos.set(box2d.coordPixelsToWorld(0, 200));
+      body.setTransform( new Vec2( 50, 0 ), 0 );
+      println("KHOSH GOWA ALAAA");
+    }
   }
 
 
@@ -85,7 +77,6 @@ class Ball {
   {
     Vec2 pos = body.getWorldCenter();
     body.applyForce(force, pos);
-    println("YOOOO");
   }
 
 
@@ -111,9 +102,8 @@ class Ball {
     line( -r, 0, r, 0);
     line( 0, -r, 0, r);
     popMatrix();
-    
-
   }
+
 
 
   void makeBody(float x, float y, float r) 
