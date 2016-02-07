@@ -1,8 +1,3 @@
-// The Nature of Code
-// <http://www.shiffman.net/teaching/nature>
-// Spring 2011
-// Box2DProcessing example
-
 // Showing how to use applyForce() with box2d
 
 // Fixed Attractor (this is redundant with Mover)

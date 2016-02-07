@@ -1,8 +1,3 @@
-// The Nature of Code
-// <http://www.shiffman.net/teaching/nature>
-// Spring 2011
-// Box2DProcessing example
-
 // Showing how to use applyForce() with box2d
 
 class Ball {
@@ -60,7 +55,7 @@ class Ball {
     if (pos.x > width)
     {
       //      pos.set(box2d.coordPixelsToWorld(0, 200));
-      body.setTransform( new Vec2( -50, 0 ), 0 );
+      m.body.setTransform( new Vec2( -50, 0 ), 0 );
       println("KHOSH GOWA ALAAA");
     }
     if (pos.x < 0)
@@ -82,6 +77,7 @@ class Ball {
 
   void jump()
   {
+    body.setLinearVelocity(new Vec2(0, movVel));
   }
 
 

@@ -29,7 +29,7 @@ Ball m;
 
 // A list we'll use to track fixed objects
 ArrayList<Boundary> boundaries;
-ArrayList<Token> tokens;
+ArrayList<ExtraTime> tokens;
 
 
 float grav;
@@ -51,7 +51,7 @@ void setup()
   m = new Ball(20, width/2, height - 20);
 
   boundaries = new ArrayList<Boundary>();
-  tokens = new ArrayList<Token>();
+  tokens = new ArrayList<ExtraTime>();
 
   //  ball = new Ball(50, width/2, height/2);r  //x, y, w, h, angle
   //X is Object's width/2 not 0 because object is dealt with from its CENTER
@@ -67,7 +67,7 @@ void setup()
     y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
     x = random(w/2, 900);
     boundaries.add(new Boundary(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
-    tokens.add(new Token(x, y - 30, 30.0f, 30.0f, a)); //X is width/2 not 0 because object is dealt with from its CENTER
+    tokens.add(new ExtraTime(x, y - 30, 30.0f, 30.0f, a)); //X is width/2 not 0 because object is dealt with from its CENTER
   }
 }
 float speed = 1000;
@@ -95,7 +95,7 @@ void draw()
     wall.display();
   }
 
-  for (Token wall : tokens) 
+  for (ExtraTime wall : tokens) 
   {
     wall.display();
   }
@@ -104,7 +104,7 @@ void draw()
   m.update();
   if (keys['A'])
   {
-    Vec2 wind = new Vec2(left, -100);
+    Vec2 wind = new Vec2(left, -50);
     //this removes half gravity 
     //      body.setLinearVelocity(new Vec2(-10, -5));
     //      body.setLinearVelocity(new Vec2(-15, -10));
@@ -113,13 +113,16 @@ void draw()
   }
   if (keys['D'])
   {
+    
     Vec2 wind = new Vec2(right, -50);
     m.applyForce(wind);
   }
 }
 
 
-
+float jumpHeight = 20;
+  float movVel = jumpHeight;
+  boolean jumpCompleted = false;
 //cp tells which fixtures collided
 //a fixture is the entity that attaches the SHAPE to the BODY. 
 //SHAPE is the thing that has geometry. TWO SHAPES come in contact with each other 
@@ -138,9 +141,7 @@ void beginContact(Contact cp)
   Object o1 = b1.getUserData();
   Object o2 = b2.getUserData();
 
-  float jumpHeight = 20;
-  float movVel = jumpHeight;
-  boolean jumpCompleted = false;
+  
 
   Ball m1 = (Ball) o2;
   //Vectors for jumping 
@@ -162,8 +163,8 @@ void beginContact(Contact cp)
     //          Vec2 jump = new Vec2(0, 10000);
     //m.applyForce(jump);
 
-
-    m1.body.setLinearVelocity(new Vec2(0, movVel));
+    m1.jump();
+    
 
     if ( ballCurrentPos.y == jumpFinish.y )
     {
