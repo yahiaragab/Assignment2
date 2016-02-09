@@ -46,8 +46,13 @@ ArrayList<Boundary> boundaries;
 ArrayList<ExtraTime> extratime;
 ArrayList<LessTime> lesstime;
 
+float speed = 1000;
+float left = speed * -1;
+float right = speed;
+
 float grav;
 int numOfPlatforms;
+boolean startGame = false;
 
 void setup()
 {
@@ -56,6 +61,7 @@ void setup()
 
   numOfPlatforms = 7;
   grav = -20;
+  
   box2d = new Box2DProcessing(this);
   box2d.createWorld();
   // No global gravity force
@@ -72,18 +78,170 @@ void setup()
   //  ball = new Ball(50, width/2, height/2);r  //x, y, w, h, angle
   //X is Object's width/2 not 0 because object is dealt with from its CENTER
   //Y - h/2
-  //  boundaries.add(new Boundary(width/2, height - 5, width, 10, 0));   //floor
+  //  boundaries.add(new Boundary(width/2, height - 5, width, 10, 0)); 
 
-  generateMap();
+  
 }
-float speed = 1000;
 
-float left = speed * -1;
+void draw()
+{
+  box2d.step();
 
-float right = speed;
+  if (!startGame)
+  {
+    mainMenu();
+  }
+  if (keys['S'])
+  {
+    startGame();
+    startGame = true;
+    generated = true;
+    mode = 1;
+  }
+  if (startGame)
+  {
+    startGame();
+  }
+      hideButton();
+
+}
+
+int mainBtns;
+
+void mainMenu()
+{
+  background(0);
+  controlP5 = new ControlP5(this);
+
+  //options on buttons in main menu
+  String[] mainMsg = {
+    "Return To Main Menu"
+  }; 
+  
+  //add buttons to array list buttons
+  int padding = 150;
+  int w = (int)textWidth(mainMsg[0]);
+  int h = 35;
+  //return to main menu button. (value 100)
+  buttons.add( controlP5.addButton(mainMsg[0], 1, 0, 0, w, h) );
+
+  //other options
+  for (int i = 1; i < mainMsg.length; i++)
+  {
+    w = (int)textWidth(mainMsg[i]) + padding;
+    h = 30;
+    int x = width/2 - (w/2);
+    int y = ( height / mainMsg.length) * i;
+    buttons.add( controlP5.addButton(mainMsg[i], i + 100, x, y, w, h) );
+    buttons.get(i).getCaptionLabel().setFont(btnfont);
+  }
+  
+  mainBtns = mainMsg.length;
+}
+
+
+  boolean generated = false;
+
+void startGame()
+{
+  if (generated == true)
+  {
+    generateMap();
+  
+    for (Boundary wall : boundaries) 
+    {
+      wall.display();
+    }
+  
+    for (ExtraTime extra : extratime) 
+    {
+      extra.display();
+    }
+  
+    for (LessTime less : lesstime) 
+    {
+      less.display();
+    }
+  
+    ball.display();
+    ball.update();
+    floor.display();
+  
+    if (keys['A'])
+    {
+      Vec2 wind = new Vec2(left, -50);
+      //this removes half gravity 
+      //      body.setLinearVelocity(new Vec2(-10, -5));
+      //      body.setLinearVelocity(new Vec2(-15, -10));
+  
+      ball.applyForce(wind);
+  //    m.body.setLinearVelocity(new Vec2(0, grav));
+    }
+    if (keys['D'])
+    {
+  
+      Vec2 wind = new Vec2(right, -50);
+      ball.applyForce(wind);
+    }
+    generated = false;
+  }
+  
+}
+
+
+
+
+
+int mode = 0; 
+
+//deals with values returned from buttons
+void controlEvent(ControlEvent theEvent)
+{
+  mode = (int)theEvent.getValue();
+  println(theEvent.getValue());
+}//control event
+
+//hiding and showing buttons
+void hideButton() 
+{
+  if (mode == 0) 
+  {
+    buttons.get(0).hide();
+    for (int i = 1; i < buttons.size (); i++)
+    {
+      if (i < mainBtns)
+      {
+        buttons.get(i).show();
+      }//end if
+      else
+      {
+        buttons.get(i).hide();
+      }//end else
+    }//end for
+  }//end if
+  else 
+  {
+        
+
+    for (int i = 1; i < buttons.size (); i++)
+    {
+      if (i < mainBtns)
+      {
+        buttons.get(i).hide();
+      }//end if
+    }//end for
+    buttons.get(0).show();
+  }//end else
+}//end hide button
+
+
+
+//GENERATE AND CLEAR MAP
+
 
 void generateMap()
 {
+  background(255);
   for (int i = 0; i < numOfPlatforms; i++)
   {
     float x, y, w, h, a;
@@ -145,60 +303,10 @@ void clearMap()
 }//end clearMap()
 
 
-void draw()
-{
-  background(255);
-  box2d.step();
-
-  //  ball.display();
-
-  //  Vec2 force = ball.attract(ball);
-  //  ball.applyForce(force);
-  //  Vec2 force = attract(m);
-  //
-  //  m.applyForce(force);
-
-  for (Boundary wall : boundaries) 
-  {
-    wall.display();
-  }
-
-  for (ExtraTime extra : extratime) 
-  {
-    extra.display();
-  }
-
-  for (LessTime less : lesstime) 
-  {
-    less.display();
-  }
-
-  ball.display();
-  ball.update();
-  floor.display();
-
-  if (keys['A'])
-  {
-    Vec2 wind = new Vec2(left, -50);
-    //this removes half gravity 
-    //      body.setLinearVelocity(new Vec2(-10, -5));
-    //      body.setLinearVelocity(new Vec2(-15, -10));
-
-    ball.applyForce(wind);
-//    m.body.setLinearVelocity(new Vec2(0, grav));
-  }
-  if (keys['D'])
-  {
-
-    Vec2 wind = new Vec2(right, -50);
-    ball.applyForce(wind);
-  }
-}
-
-
 float jumpHeight = 20;
 float movVel = jumpHeight;
 boolean jumpCompleted = false;
+
 
 //cp tells which fixtures collided
 //a fixture is the entity that attaches the SHAPE to the BODY. 
@@ -289,6 +397,7 @@ void endContact()
 void keyPressed()
 {
   keys[keyCode] = true;
+
 }
 
 void keyReleased()
