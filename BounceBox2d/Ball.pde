@@ -6,6 +6,7 @@ class Ball {
 
 
   Body body;
+  Vec2 posi;
 
   float r;
   //  color col = color(172, 89, 94);
@@ -42,28 +43,25 @@ class Ball {
 
   void update()
   {
-    //this gets the COORDINATES!!!
+    //this gets the coordinates of the ball
     Vec2 pos = box2d.getBodyPixelCoord(body);
+    
+    //setTransform funtion is acting on the origin, and is dealing
+    //with the width (1000) as if it is 100, and height (700) as if it is 70.
+    //I don't know the reason, to be honest, but this is how I fixed it 
+    float y = map(pos.y, 0, height, -(height/20), (height/20) );
+    float x = map(pos.x, 0, width, -(width/20), (width/20));
 
-
-    //left
-
-    //right
-
-
-    //trying to wrap screen
+    //wrap screen code
     if (pos.x > width)
     {
-      //      pos.set(box2d.coordPixelsToWorld(0, 200));
-      ball.body.setTransform( new Vec2( -50, 0 ), 0 );
-      println("KHOSH GOWA ALAAA");
+      body.setTransform( new Vec2( -x, -y ), 0 );
     }
     if (pos.x < 0)
     {
-      //      pos.set(box2d.coordPixelsToWorld(0, 200));
-      body.setTransform( new Vec2( 50, 0 ), 0 );
-      println("KHOSH GOWA ALAAA");
+      body.setTransform( new Vec2( -x, -y ), 0 );
     }
+    
   }
 
 
@@ -105,6 +103,7 @@ class Ball {
 
   void makeBody(float x, float y, float r) 
   {
+    posi = new Vec2(x, y);
     BodyDef bd = new BodyDef();
     bd.type = BodyType.DYNAMIC;
 

@@ -54,6 +54,10 @@ float grav;
 int numOfPlatforms;
 boolean startGame = false;
 
+float jumpHeight = 500;
+float movVel = jumpHeight;
+boolean jumpCompleted = false;
+
 void setup()
 {
   size(1000, 700);
@@ -79,7 +83,7 @@ void setup()
   //X is Object's width/2 not 0 because object is dealt with from its CENTER
   //Y - h/2
   //  boundaries.add(new Boundary(width/2, height - 5, width, 10, 0)); 
-generateMap();
+  generateMap();
   
 }
 
@@ -100,7 +104,7 @@ background(255);
 //  }
 //  if (startGame)
 //  {
-  generated = true;
+//  generated = true;
     startGame();
 //    generateMap();
 //  }
@@ -200,6 +204,8 @@ int mode = 0;
 void controlEvent(ControlEvent theEvent)
 {
   mode = (int)theEvent.getValue();
+  if (mode == 0)
+  generateMap();
   println(theEvent.getValue());
 }//control event
 
@@ -305,9 +311,6 @@ void clearMap()
 }//end clearMap()
 
 
-float jumpHeight = 300;
-float movVel = jumpHeight;
-boolean jumpCompleted = false;
 
 
 //cp tells which fixtures collided
