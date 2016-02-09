@@ -40,6 +40,7 @@ boolean[] keys = new boolean[512];
 
 Ball ball;
 Floor floor;
+Goal goal;
 
 // A list we'll use to track fixed objects
 ArrayList<Platform> platforms;
@@ -74,6 +75,7 @@ void setup()
 
   ball = new Ball(20, width/2, height - 20);
   floor = new Floor(width/2, height - 5, width, 10, 0);
+  goal = new Goal(width/2, 5, width, 10, 0);
 
   platforms = new ArrayList<Platform>();
   extratime = new ArrayList<ExtraTime>();
@@ -172,6 +174,7 @@ void startGame()
     ball.display();
     ball.update();
     floor.display();
+    goal.display();
   
     if (keys['A'])
     {

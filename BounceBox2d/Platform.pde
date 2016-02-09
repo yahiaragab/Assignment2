@@ -16,7 +16,7 @@ class Platform extends Boundary
   // Draw the boundary, it doesn't move so we don't have to ask the Body for location
   void display() 
   {
-    super.display();
+    super.display(0);
   }
 
 

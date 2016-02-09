@@ -6,6 +6,7 @@ class Boundary {
   float y;
   float w;
   float h;
+  color col;
   // But we also have to make a body for box2d to know about it
   Body body;
 
@@ -32,10 +33,10 @@ class Boundary {
 
 
   // Draw the boundary, it doesn't move so we don't have to ask the Body for location
-  void display() 
+  void display(color col) 
   {
-    fill(0);
-    stroke(0);
+    fill(col);
+    stroke(col);
     strokeWeight(1);
     rectMode(CENTER);
     float a = body.getAngle();
