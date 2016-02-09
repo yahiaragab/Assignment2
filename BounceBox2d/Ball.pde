@@ -55,7 +55,7 @@ class Ball {
     if (pos.x > width)
     {
       //      pos.set(box2d.coordPixelsToWorld(0, 200));
-      m.body.setTransform( new Vec2( -50, 0 ), 0 );
+      ball.body.setTransform( new Vec2( -50, 0 ), 0 );
       println("KHOSH GOWA ALAAA");
     }
     if (pos.x < 0)
