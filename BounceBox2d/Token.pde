@@ -48,6 +48,8 @@ class Token {
     rotate(-a);
     rect(0, 0, w, h);
     popMatrix();
+    
+    body.setAngularVelocity(30);
   }
 
 

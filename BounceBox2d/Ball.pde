@@ -45,7 +45,7 @@ class Ball {
   {
     //this gets the coordinates of the ball
     Vec2 pos = box2d.getBodyPixelCoord(body);
-    
+
     //setTransform funtion is acting on the origin, and is dealing
     //with the width (1000) as if it is 100, and height (700) as if it is 70.
     //I don't know the reason, to be honest, but this is how I fixed it 
@@ -53,18 +53,16 @@ class Ball {
     float x = map(pos.x, 0, width, -(width/20), (width/20));
 
     //wrap screen code
-    if (pos.x > width)
+    if (pos.x > width || pos.x < 0)
     {
       body.setTransform( new Vec2( -x, -y ), 0 );
     }
+
     if (pos.x < 0)
     {
       body.setTransform( new Vec2( -x, -y ), 0 );
     }
-    
   }
-
-
 
   void applyForce(Vec2 force) 
   {
@@ -75,8 +73,8 @@ class Ball {
 
   void jump()
   {
-//    body.setLinearVelocity(new Vec2(0, movVel));
-    body.applyLinearImpulse( new Vec2(0,-jumpHeight) , body.getPosition(), true );
+    //    body.setLinearVelocity(new Vec2(0, movVel));
+    body.applyLinearImpulse( new Vec2(0, -jumpHeight), body.getPosition(), true );
   }
 
 

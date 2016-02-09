@@ -54,7 +54,7 @@ float grav;
 int numOfPlatforms;
 boolean startGame = false;
 
-float jumpHeight = 500;
+float jumpHeight = 350;
 float movVel = jumpHeight;
 boolean jumpCompleted = false;
 
@@ -250,34 +250,44 @@ void hideButton()
 void generateMap()
 {
   background(255);
+  float x, y, w, h, a, prevX = 0;
+  float diff = 40;
   for (int i = 0; i < numOfPlatforms; i++)
   {
-    float x, y, w, h, a;
+    
     a = random(-0.2, 0.2);
     h = 10;
     w = random(50, 300);
     y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
     x = random(w/2, 900);
+    if ( x > prevX - diff && x < prevX + diff)
+    {
+      w += (diff * 2);
+      if (x > 900)
+      {
+        x -= diff * 3;
+      }
+    }
+    prevX = x;
     platforms.add(new Platform(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
 
     int collectable = (int) random(0, 5);
     float tokenFloat = h + 15;
     float tokenW = 30;
     float tokenH = 30;
-    //      ExtraToken extra = null;
-    //      LessToken less = null;
 
-    switch (collectable)
-    {
-    case 0:
-      extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
-      break;
-    case 1:
-      lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
-      break;
-    default:
-      break;
-    }//end switch
+//    switch (collectable)
+//    {
+//    case 0:
+//      extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
+//      break;
+//    case 1:
+//      lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
+//      break;
+//    default:
+//      break;
+//    }//end switch
+    
   }//end for
 }//end generateMap()
 
