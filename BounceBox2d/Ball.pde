@@ -77,7 +77,8 @@ class Ball {
 
   void jump()
   {
-    body.setLinearVelocity(new Vec2(0, movVel));
+//    body.setLinearVelocity(new Vec2(0, movVel));
+    body.applyLinearImpulse( new Vec2(0,-jumpHeight) , body.getPosition(), true );
   }
 
 

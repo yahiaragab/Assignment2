@@ -79,30 +79,32 @@ void setup()
   //X is Object's width/2 not 0 because object is dealt with from its CENTER
   //Y - h/2
   //  boundaries.add(new Boundary(width/2, height - 5, width, 10, 0)); 
-
+generateMap();
   
 }
 
 void draw()
 {
   box2d.step();
-
-  if (!startGame)
-  {
-    mainMenu();
-  }
-  if (keys['S'])
-  {
+background(255);
+//  if (!startGame)
+//  {
+//    mainMenu();
+//  }
+//  if (keys['S'])
+//  {
+//    startGame();
+//    startGame = true;
+//    generated = true;
+//    mode = 1;
+//  }
+//  if (startGame)
+//  {
+  generated = true;
     startGame();
-    startGame = true;
-    generated = true;
-    mode = 1;
-  }
-  if (startGame)
-  {
-    startGame();
-  }
-      hideButton();
+//    generateMap();
+//  }
+//      hideButton();
 
 }
 
@@ -144,9 +146,9 @@ void mainMenu()
 
 void startGame()
 {
-  if (generated == true)
-  {
-    generateMap();
+//  if (generated == true)
+//  {
+//    generateMap();
   
     for (Boundary wall : boundaries) 
     {
@@ -183,8 +185,8 @@ void startGame()
       Vec2 wind = new Vec2(right, -50);
       ball.applyForce(wind);
     }
-    generated = false;
-  }
+//    generated = false;
+//  }
   
 }
 
@@ -303,7 +305,7 @@ void clearMap()
 }//end clearMap()
 
 
-float jumpHeight = 20;
+float jumpHeight = 300;
 float movVel = jumpHeight;
 boolean jumpCompleted = false;
 
