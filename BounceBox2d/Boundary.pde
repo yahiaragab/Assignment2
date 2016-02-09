@@ -1,4 +1,4 @@
-// A fixed boundary class (now incorporates angle)
+// A parent boundary class
 class Boundary {
 
   // A boundary is a simple rectangle with x,y,width,and height
@@ -49,14 +49,14 @@ class Boundary {
   
   void makeBody(float x, float y, float w, float h, float a)
   {
-        // Define the polygon
+    // Define the polygon
     PolygonShape sd = new PolygonShape();
     // Figure out the box2d coordinates
     float box2dW = box2d.scalarPixelsToWorld(w/2);
     float box2dH = box2d.scalarPixelsToWorld(h/2);
+    
     // We're just a box
     sd.setAsBox(box2dW, box2dH);
-
 
     // Create the body
     BodyDef bd = new BodyDef();

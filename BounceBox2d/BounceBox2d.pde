@@ -42,7 +42,7 @@ Ball ball;
 Floor floor;
 
 // A list we'll use to track fixed objects
-ArrayList<Boundary> boundaries;
+ArrayList<Platform> platforms;
 ArrayList<ExtraTime> extratime;
 ArrayList<LessTime> lesstime;
 
@@ -75,14 +75,14 @@ void setup()
   ball = new Ball(20, width/2, height - 20);
   floor = new Floor(width/2, height - 5, width, 10, 0);
 
-  boundaries = new ArrayList<Boundary>();
+  platforms = new ArrayList<Platform>();
   extratime = new ArrayList<ExtraTime>();
   lesstime = new ArrayList<LessTime>();
 
   //  ball = new Ball(50, width/2, height/2);r  //x, y, w, h, angle
   //X is Object's width/2 not 0 because object is dealt with from its CENTER
   //Y - h/2
-  //  boundaries.add(new Boundary(width/2, height - 5, width, 10, 0)); 
+  //  platforms.add(new Platform(width/2, height - 5, width, 10, 0)); 
   generateMap();
   
 }
@@ -154,7 +154,7 @@ void startGame()
 //  {
 //    generateMap();
   
-    for (Boundary wall : boundaries) 
+    for (Platform wall : platforms) 
     {
       wall.display();
     }
@@ -258,7 +258,7 @@ void generateMap()
     w = random(50, 300);
     y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
     x = random(w/2, 900);
-    boundaries.add(new Boundary(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
+    platforms.add(new Platform(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
 
     int collectable = (int) random(0, 5);
     float tokenFloat = h + 15;
@@ -284,11 +284,11 @@ void generateMap()
 void clearMap()
 {
 
-  for (int i = 0; i < boundaries.size(); i++)
+  for (int i = 0; i < platforms.size(); i++)
   {
       
-      boundaries.get(i).killBody();
-      boundaries.remove(i);
+      platforms.get(i).killBody();
+      platforms.remove(i);
 //    box2d.destroyBody(b.body);
   }
 
@@ -343,12 +343,12 @@ void beginContact(Contact cp)
 
   //User data doesn't determine TYPE of body
   //If object 1 is a boundary, and object 2 is a Ball, then
-  if (o1.getClass() == Boundary.class && o2.getClass() == Ball.class
+  if (o1.getClass() == Platform.class && o2.getClass() == Ball.class
     ||
-    o1.getClass() == Ball.class && o2.getClass() == Boundary.class)
+    o1.getClass() == Ball.class && o2.getClass() == Platform.class)
   {
     Ball m1 = (Ball) o2;
-    Boundary m2 = (Boundary) o1;
+    Platform m2 = (Platform) o1;
 
     //if Vec2 JumpFinish = box2d.getBodyPixelCoord(m1); , pos.y is < than Vec2 on JumpStart, dont change velocity
 //    Vec2 ballCurrentPos = box2d.getBodyPixelCoord(m1.body);
