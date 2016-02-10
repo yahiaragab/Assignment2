@@ -104,10 +104,11 @@ void setup()
   //Y - h/2
   //  platforms.add(new Platform(width/2, height - 5, width, 10, 0)); 
   generateMap();
+  output = createWriter("leaderboard.txt");
 }
 
 int mode = 0; 
-float levelTime = 30;
+float levelTime = 5;
 float time = levelTime;
 int points = 0;
 
@@ -135,10 +136,10 @@ void draw()
     break;
 
   case 3:
-    
+    gameOver();
 
   default:
-    gameOver();
+    
     break;
   }
 
@@ -153,10 +154,15 @@ void instructions()
 void pause()
 {
 }
+PrintWriter output;
 
 void gameOver()
 {
-  
+  background(255);
+  textSize(70);
+  textAlign(CENTER);
+  text("Final Score: " + points, width/2, height/4);
+  output.println(points);
 }
 
 void mainMenu()
@@ -214,8 +220,8 @@ void startGame()
   }
   if (time == 0)
   {
-    gameOver();
-  }
+mode = 3;
+}
   
   for (Platform wall : platforms) 
   {
