@@ -49,7 +49,7 @@ class Token {
     rect(0, 0, w, h);
     popMatrix();
     
-    body.setAngularVelocity(30);
+    
   }
 
 
@@ -66,7 +66,7 @@ class Token {
 
     // Create the body
     BodyDef bd = new BodyDef();
-    bd.type = BodyType.STATIC;
+    bd.type = BodyType.DYNAMIC;
     bd.angle = a;
     bd.position.set(box2d.coordPixelsToWorld(x, y));
     body = box2d.createBody(bd);

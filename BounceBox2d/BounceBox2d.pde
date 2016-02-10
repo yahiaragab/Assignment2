@@ -36,12 +36,12 @@ ControlFont headFont = new ControlFont(headfont, 241);
 
 //importing sound library
 import ddf.minim.*;
- 
+
 AudioPlayer bounceSound;
 AudioPlayer bell;
 Minim minim;//audio context
- 
-    
+
+
 
 
 
@@ -75,16 +75,16 @@ void setup()
 {
   size(1000, 700);
   smooth();
-  
+
   img = loadImage("background1.jpg");
-  
+
   minim = new Minim(this);
   bounceSound = minim.loadFile("bounce.mp3", 5048);
   bell = minim.loadFile("bell.mp3", 5048);
 
   numOfPlatforms = 7;
   grav = -20;
-  
+
   box2d = new Box2DProcessing(this);
   box2d.createWorld();
   // No global gravity force
@@ -93,7 +93,7 @@ void setup()
 
   ball = new Ball(20, width/2, height - 20);
   floor = new Floor(width/2, height - 5, width, 10, 0);
-//  goal = new Goal(width/2, 5, width, 10, 0);
+  //  goal = new Goal(width/2, 5, width, 10, 0);
 
   platforms = new ArrayList<Platform>();
   extratime = new ArrayList<ExtraTime>();
@@ -104,7 +104,6 @@ void setup()
   //Y - h/2
   //  platforms.add(new Platform(width/2, height - 5, width, 10, 0)); 
   generateMap();
-  
 }
 
 int mode = 0; 
@@ -112,149 +111,142 @@ int mode = 0;
 void draw()
 {
   box2d.step();
-background(255);
-//  if (!startGame)
-//  {
-//    mainMenu();
-//  }
-//  if (keys['S'])
-//  {
-//    startGame();
-//    startGame = true;
-//    generated = true;
-//    mode = 1;
-//  }
-//  if (startGame)
-//  {
-//  generated = true;
-//    startGame();
-//    mainMenu();
-//    generateMap();
-//  }
-  
+  background(255);
+  //  if (!startGame)
+  //  {
+  //    mainMenu();
+  //  }
+  //  if (keys['S'])
+  //  {
+  //    startGame();
+  //    startGame = true;
+  //    generated = true;
+  //    mode = 1;
+  //  }
+  //  if (startGame)
+  //  {
+  //  generated = true;
+  //    startGame();
+  //    mainMenu();
+  //    generateMap();
+  //  }
+
   switch (mode)
   {
-    case 0:
-      loop();
-      mainMenu();
-      break;
-    
-    case 1:
-//      noLoop();
-      pause();
-      break;
-      
-    case 2:
-      loop();
-      startGame();
-      break;
-      
-    case 3:
-      loop();
-      instructions();
-      break;
-            
-    case 4:
+  case 0:
+    startGame = false;
+    loop();
+    mainMenu();
+    break;
 
-            
-    default:
-      gameOver();
-      break;
-    
+  case 1:
+    loop();
+    startGame();
+    break;
+
+  case 2:
+    loop();
+    instructions();
+    break;
+
+  case 3:
+
+
+  default:
+    gameOver();
+    break;
   }
-  
+
   hideButton();
-
-
 }
 
 int mainBtns;
 void instructions()
 {
-  
 }
 
 void pause()
 {
-  
 }
 
 void gameOver()
 {
-  
 }
 
 void mainMenu()
 {
   background(200);
   controlP5 = new ControlP5(this);
-   
+
   image(img, -300, -150);
-  
+
   //options on buttons in main menu
   String[] mainMsg = 
   {
-    "Quit", "Pause", "Start Game", "Instructions", "Leaderboards"
+    "Quit", "Start Game", "Instructions", "Leaderboards"
   }; 
-  
+
   //add buttons to array list buttons
   int padding = 300;
   int w = (int)textWidth(mainMsg[0]) + padding;
   int h = 50;
   //return to main menu button. (value 100)
   buttons.add( controlP5.addButton(mainMsg[0], 0, 0, 0, (int)textWidth(mainMsg[0]), 20) );
-  buttons.add( controlP5.addButton(mainMsg[1], 1, width - 34, 0, (int)textWidth(mainMsg[1]), 20) );
 
   //other options
-  for (int i = 2; i < mainMsg.length; i++)
+  for (int i = 1; i < mainMsg.length; i++)
   {
     int x = width/2 - (w/2);
     int y = ( height / mainMsg.length) * i;
     buttons.add( controlP5.addButton(mainMsg[i], i, x, y, w, h) );
     buttons.get(i).getCaptionLabel().setFont(btnfont);
   }
-  
 
-  
-  mainBtns = mainMsg.length + 1;
+
+
+  mainBtns = mainMsg.length;
 }
 
 
 
 void startGame()
 {
-  startGame = true;
-    for (Platform wall : platforms) 
-    {
-      wall.display();
-    }
+  if (!startGame)
+  {
+    ball.restart();
+    startGame = true;
+  }
   
-    for (ExtraTime extra : extratime) 
-    {
-      extra.display();
-    }
-  
-    for (LessTime less : lesstime) 
-    {
-      less.display();
-    }
-  
-    ball.display();
-    ball.update();
-    floor.display();
-//    goal.display();
-  
-    if (keys['A'])
-    {
-      Vec2 wind = new Vec2(left, -50);
-      ball.applyForce(wind);
-    }
-    if (keys['D'])
-    {
-      Vec2 wind = new Vec2(right, -50);
-      ball.applyForce(wind);
-    }
-  
+  for (Platform wall : platforms) 
+  {
+    wall.display();
+  }
+
+  for (ExtraTime extra : extratime) 
+  {
+    extra.display();
+  }
+
+  for (LessTime less : lesstime) 
+  {
+    less.display();
+  }
+
+  ball.display();
+  ball.update();
+  floor.display();
+  //    goal.display();
+
+  if (keys['A'])
+  {
+    Vec2 wind = new Vec2(left, -50);
+    ball.applyForce(wind);
+  }
+  if (keys['D'])
+  {
+    Vec2 wind = new Vec2(right, -50);
+    ball.applyForce(wind);
+  }
 }
 
 
@@ -271,12 +263,11 @@ void hideButton()
   //if on main menu
   if (mode == 0) 
   {
-    //hide quit and pause buttons
+    //hide quit
     buttons.get(0).hide();
-    buttons.get(1).hide();
-    
+
     //show all other buttons
-    for (int i = 2; i < buttons.size (); i++)
+    for (int i = 1; i < buttons.size (); i++)
     {
       if (i < mainBtns)
       {
@@ -290,7 +281,7 @@ void hideButton()
   }//end if
   else 
   {
-    for (int i = 2; i < buttons.size (); i++)
+    for (int i = 1; i < buttons.size (); i++)
     {
       if (i < mainBtns)
       {
@@ -298,7 +289,6 @@ void hideButton()
       }//end if
     }//end for
     buttons.get(0).show();
-    buttons.get(1).show();
   }//end else
 }//end hide button
 
@@ -319,7 +309,7 @@ void generateMap()
     y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
     h = 10;
     a = random(-0.2, 0.2);
-    
+
     if ( x > prevX - diff && x < prevX + diff)
     {
       w += (diff * 2);
@@ -331,60 +321,57 @@ void generateMap()
     prevX = x;
     platforms.add(new Platform(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
 
-//    generateTokens(a, y, w, h, a);
-    
+    //    generateTokens(a, y, w, h, a);
   }//end for
 }//end generateMap()
 
 void generateTokens(float x, float y, float w, float h, float a)
 {
-    int collectable = (int) random(0, 5);
-    float tokenFloat = h + 15;
-    float tokenW = 30;
-    float tokenH = 30;
+  int collectable = (int) random(0, 5);
+  float tokenFloat = h + 15;
+  float tokenW = 30;
+  float tokenH = 30;
 
-    switch (collectable)
-    {
-    case 0:
-      extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
-      break;
-    case 1:
-      lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
-      break;
-    default:
-      break;
-    }//end switch
-  
+  switch (collectable)
+  {
+  case 0:
+    extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
+    break;
+  case 1:
+    lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
+    break;
+  default:
+    break;
+  }//end switch
 }
 
 
 void clearMap()
 {
 
-  for (int i = 0; i < platforms.size(); i++)
+  for (int i = 0; i < platforms.size (); i++)
   {
-      
-      platforms.get(i).killBody();
-      platforms.remove(i);
-//    box2d.destroyBody(b.body);
+
+    platforms.get(i).killBody();
+    platforms.remove(i);
+    //    box2d.destroyBody(b.body);
   }
 
-  for (int i = 0; i < extratime.size(); i++)
+  for (int i = 0; i < extratime.size (); i++)
   {
-      
-      extratime.get(i).killBody();
-      extratime.remove(i);
-//    box2d.destroyBody(b.body);
+
+    extratime.get(i).killBody();
+    extratime.remove(i);
+    //    box2d.destroyBody(b.body);
   }
 
-  for (int i = 0; i < lesstime.size(); i++)
+  for (int i = 0; i < lesstime.size (); i++)
   {
-      
-      lesstime.get(i).killBody();
-      lesstime.remove(i);
-//    box2d.destroyBody(b.body);
-  }
 
+    lesstime.get(i).killBody();
+    lesstime.remove(i);
+    //    box2d.destroyBody(b.body);
+  }
 }//end clearMap()
 
 
@@ -428,13 +415,12 @@ void beginContact(Contact cp)
     Platform m2 = (Platform) o1;
 
     m1.jump();
-    
-    if(startGame)
+
+    if (startGame)
     {
       bounceSound.play();
       bounceSound.rewind();
     }
-
   }//end if ball and platform collision 
 
 
@@ -445,13 +431,12 @@ void beginContact(Contact cp)
     Ball m1 = (Ball) o2;
 
     m1.jump();
-    
-    if(startGame)
+
+    if (startGame)
     {
       bounceSound.play();
       bounceSound.rewind();
     }
-
   }
 
   if (o1.getClass() == Goal.class && o2.getClass() == Ball.class
@@ -459,15 +444,14 @@ void beginContact(Contact cp)
     o1.getClass() == Ball.class && o2.getClass() == Goal.class)
   {
     Ball m1 = (Ball) o2;
-    
-    if(startGame)
+
+    if (startGame)
     {
       bell.play();
       bell.rewind();
     }
-    
-    m1.restart();
 
+    m1.restart();
   }
 
 
@@ -492,16 +476,12 @@ void beginContact(Contact cp)
 
 void endContact(Contact cp)
 {
-  
-
-  
 }
 
 
 void keyPressed()
 {
   keys[keyCode] = true;
-
 }
 
 void keyReleased()
