@@ -304,21 +304,21 @@ void generateMap()
   float diff = 40;
   for (int i = 0; i < numOfPlatforms; i++)
   {
-    w = random(50, 300);
-    x = random(w/2, 900);
+    w = random(100, 350)+ (40 * random(-1, 1) );
+    x = random(w/2, 900) + (40 * random(-1, 1) );
     y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
     h = 10;
     a = random(-0.2, 0.2);
 
-    if ( x > prevX - diff && x < prevX + diff)
-    {
-      w += (diff * 2);
-      if (x > 900)
-      {
-        x -= diff * 3;
-      }
-    }
-    prevX = x;
+//    if ( x > prevX - diff && x < prevX + diff)
+//    {
+//      w += (diff * 2);
+//      if (x > 900)
+//      {
+//        x -= diff * 3;
+//      }
+//    }
+//    prevX = x;
     platforms.add(new Platform(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
 
     //    generateTokens(a, y, w, h, a);

@@ -68,6 +68,17 @@ class Ball {
       restart();
       points++;
       time += 20;
+      Vec2 platPos;
+//      for (Platform plat : platforms) 
+//      {
+////        platPos = box2d.getBodyPixelCoord(plat.body);
+////
+////        plat.body.setTransform(new Vec2(random(-50, 50), map(platPos.y, 0, height, -(height/20), (height/20) )), random(-.2, .2) );
+////        plat.display();
+//plat.killBody();
+//platforms.remove(plat.body);
+//      }
+//      generateMap();
     }
   }
 
