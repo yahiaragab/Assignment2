@@ -66,6 +66,7 @@ class Token {
     vertices[1] = box2d.vectorPixelsToWorld(new Vec2(15, 25));      //THIS IS WHERE YOU DRAW THE SHAPE!!!!
     vertices[2] = box2d.vectorPixelsToWorld(new Vec2(15, -25));
     vertices[3] = box2d.vectorPixelsToWorld(new Vec2(-15, -25));
+    
 
     sd.set(vertices, vertices.length);
 

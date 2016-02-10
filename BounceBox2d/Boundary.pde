@@ -35,13 +35,15 @@ class Boundary {
   // Draw the boundary, it doesn't move so we don't have to ask the Body for location
   void display(color col) 
   {
+    Vec2 pos = box2d.getBodyPixelCoord(body);
+
     fill(col);
     stroke(col);
     strokeWeight(1);
     rectMode(CENTER);
     float a = body.getAngle();
     pushMatrix();
-    translate(x, y);
+    translate(pos.x, pos.y);
     rotate(-a);
     rect(0, 0, w, h);
     popMatrix();

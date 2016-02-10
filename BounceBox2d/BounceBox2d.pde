@@ -65,9 +65,8 @@ float grav;
 int numOfPlatforms;
 boolean startGame = false;
 
-float jumpHeight = 350;
+float jumpHeight = 1000;
 float movVel = jumpHeight;
-boolean jumpCompleted = false;
 
 PImage img;
 
@@ -195,7 +194,6 @@ void mainMenu()
 }
 
 
-
 void startGame()
 {
   if (!startGame)
@@ -219,9 +217,9 @@ void startGame()
     mode = 3;
   }
 
-  for (Platform wall : platforms) 
+  for (int i = 0; i < platforms.size(); i++) 
   {
-    wall.display();
+    platforms.get(i).display();
   }
 
   for (LessTime less : lesstime) 
@@ -232,6 +230,7 @@ void startGame()
   ball.display();
   ball.update();
   floor.display();
+  
   //    goal.display();
 
   if (keys['A'])
@@ -297,7 +296,7 @@ void hideButton()
 void generateMap()
 {
   background(255);
-  float x, y, w, h, a, prevX = 0;
+  float x, y, w, h, a;
   float diff = 40;
   for (int i = 0; i < numOfPlatforms; i++)
   {
@@ -328,6 +327,7 @@ void generateTokens(float x, float y, float w, float h, float a)
   float tokenFloat = h + 15;
   float tokenW = 30;
   float tokenH = 30;
+  
   x += random(0, w/2) * random(-1, 1);
   //  switch (collectable)
   //  {
