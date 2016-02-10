@@ -42,9 +42,6 @@ AudioPlayer bell;
 Minim minim;//audio context
 
 
-
-
-
 boolean[] keys = new boolean[512];
 
 
@@ -54,7 +51,6 @@ Floor floor;
 
 // A list we'll use to track fixed objects
 ArrayList<Platform> platforms;
-ArrayList<ExtraTime> extratime;
 ArrayList<LessTime> lesstime;
 
 float speed = 1000;
@@ -65,7 +61,7 @@ float grav;
 int numOfPlatforms;
 boolean startGame = false;
 
-float jumpHeight = 1000;
+float jumpHeight = 500;
 float movVel = jumpHeight;
 
 PImage img;
@@ -95,7 +91,6 @@ void setup()
   //  goal = new Goal(width/2, 5, width, 10, 0);
 
   platforms = new ArrayList<Platform>();
-  extratime = new ArrayList<ExtraTime>();
   lesstime = new ArrayList<LessTime>();
 
   //  ball = new Ball(50, width/2, height/2);r  //x, y, w, h, angle
@@ -106,8 +101,8 @@ void setup()
 }
 
 int mode = 0; 
-float levelTime = 30;
-float time = levelTime;
+int levelTime = 30;
+int time = levelTime;
 int points = 0;
 
 void draw()
@@ -147,12 +142,15 @@ void draw()
 }
 
 int mainBtns;
+PImage instr;
+
+
 void instructions()
 {
-}
+  instr = loadImage("instructions.jpg");
 
-void pause()
-{
+  image(instr, 20, 20);
+  
 }
 
 void gameOver()
@@ -161,10 +159,8 @@ void gameOver()
   textSize(70);
   textAlign(CENTER);
   text("Final Score: " + points, width/2, height/4);
-    textSize(30);
-
+  textSize(30);
   text("Press the 'QUIT' button at the top left of the screent to play again! ", width/2, 3* height/4);
-
 }
 
 void mainMenu()
@@ -195,7 +191,6 @@ void mainMenu()
     buttons.add( controlP5.addButton(mainMsg[i], i, x, y, w, h) );
     buttons.get(i).getCaptionLabel().setFont(btnfont);
   }
-
   mainBtns = mainMsg.length;
 }
 
@@ -212,7 +207,7 @@ void startGame()
   }
 
   textSize(15);
-  text(time, width/2, 15);
+  text("Time Remaining: " + time + " seconds", width/3, 15);
   text(points, 3*width/4, 15);
 
   if (frameCount % 60 == 0)
@@ -238,8 +233,6 @@ void startGame()
   ball.update();
   floor.display();
 
-  //    goal.display();
-
   if (keys['A'])
   {
     Vec2 wind = new Vec2(left, -50);
@@ -252,13 +245,7 @@ void startGame()
   }
 }
 
-
-
-
-
 //GENERATE AND CLEAR MAP
-
-
 void generateMap()
 {
   background(255);
@@ -272,20 +259,12 @@ void generateMap()
     h = 10;
     a = random(-0.2, 0.2);
 
-    //    if ( x > prevX - diff && x < prevX + diff)
-    //    {
-    //      w += (diff * 2);
-    //      if (x > 900)
-    //      {
-    //        x -= diff * 3;
-    //      }
-    //    }
-    //    prevX = x;
     platforms.add(new Platform(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
     //every 3 points generate less time tokens
     generateTokens(i);
   }//end for
 }//end generateMap()
+
 
 void generateTokens(int i)
 {
@@ -303,32 +282,18 @@ void generateTokens(int i)
   float tokenH = 30;
 
   x += random(0, w/2) * random(-1, 1);
-  //  switch (collectable)
-  //  {
-  //  case 0:
-  //    extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
-  //    break;
-  //  case 1:
-  //    lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
-  //    break;
-  //  default:
-  //    break;
-  //  }//end switch
 
   //generate one less time token every 2 levels
   if (i == 1)
   {
-  lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
-  lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
-  lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
-
+    lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
+    lesstime.add(new LessTime(x + 20, y - tokenFloat, tokenW, tokenH, a));
   }
 }
 
 
 void newMap()
 {
-
   Vec2 platPos;
 
   for (Platform plat : platforms) 
@@ -338,7 +303,6 @@ void newMap()
     plat.body.setTransform(new Vec2(random(-50, 50), -map(platPos.y, 0, height, -(height/20), (height/20) )), random(-.2, .2) );
     plat.display();
   }
-
 
   Vec2 lessPos;
   for (int i = 0; i < lesstime.size (); i++) 
@@ -409,13 +373,6 @@ void beginContact(Contact cp)
     }
   }
 
-
-  if (o1.getClass() == ExtraTime.class && o2.getClass() == Ball.class
-    ||
-    o1.getClass() == Ball.class && o2.getClass() == ExtraTime.class)
-  {
-    Ball m1 = (Ball) o2;
-  }
 
   if (o1.getClass() == LessTime.class && o2.getClass() == Ball.class
     ||

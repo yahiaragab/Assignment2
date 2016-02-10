@@ -1,0 +1,7 @@
+Game Description:
+Don’t let the time run out! Your goal is to keep going as high as you can for the longest time! Squares reduce 5 seconds of your time if you touch them, so watch out for them!
+
+Controls:
+
+Left: A
+Right: D
