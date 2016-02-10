@@ -62,6 +62,11 @@ class Ball {
     {
       body.setTransform( new Vec2( -x, -y ), 0 );
     }
+    
+    if (pos.y < 0)
+    {
+      restart();
+    }
   }
 
   void restart()

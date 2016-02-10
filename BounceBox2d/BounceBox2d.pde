@@ -69,10 +69,14 @@ float jumpHeight = 350;
 float movVel = jumpHeight;
 boolean jumpCompleted = false;
 
+PImage img;
+
 void setup()
 {
   size(1000, 700);
   smooth();
+  
+  img = loadImage("background1.jpg");
   
   minim = new Minim(this);
   bounceSound = minim.loadFile("bounce.mp3", 5048);
@@ -89,7 +93,7 @@ void setup()
 
   ball = new Ball(20, width/2, height - 20);
   floor = new Floor(width/2, height - 5, width, 10, 0);
-  goal = new Goal(width/2, 5, width, 10, 0);
+//  goal = new Goal(width/2, 5, width, 10, 0);
 
   platforms = new ArrayList<Platform>();
   extratime = new ArrayList<ExtraTime>();
@@ -102,6 +106,8 @@ void setup()
   generateMap();
   
 }
+
+int mode = 0; 
 
 void draw()
 {
@@ -132,22 +138,28 @@ background(255);
       loop();
       mainMenu();
       break;
+    
     case 1:
+//      noLoop();
+      pause();
+      break;
+      
+    case 2:
       loop();
       startGame();
       break;
-    case 2:
+      
+    case 3:
       loop();
       instructions();
-    case 3:
-      pause();
-      noLoop();
       break;
-      
+            
+    case 4:
+
+            
     default:
       gameOver();
       break;
-      
     
   }
   
@@ -167,26 +179,34 @@ void pause()
   
 }
 
+void gameOver()
+{
+  
+}
+
 void mainMenu()
 {
   background(200);
   controlP5 = new ControlP5(this);
-
+   
+  image(img, -300, -150);
+  
   //options on buttons in main menu
   String[] mainMsg = 
   {
-    "Return To Main Menu", "Start Game", "Instructions", "Leaderboards"
+    "Quit", "Pause", "Start Game", "Instructions", "Leaderboards"
   }; 
   
   //add buttons to array list buttons
-  int padding = 150;
+  int padding = 300;
   int w = (int)textWidth(mainMsg[0]) + padding;
   int h = 50;
   //return to main menu button. (value 100)
   buttons.add( controlP5.addButton(mainMsg[0], 0, 0, 0, (int)textWidth(mainMsg[0]), 20) );
+  buttons.add( controlP5.addButton(mainMsg[1], 1, width - 34, 0, (int)textWidth(mainMsg[1]), 20) );
 
   //other options
-  for (int i = 1; i < mainMsg.length; i++)
+  for (int i = 2; i < mainMsg.length; i++)
   {
     int x = width/2 - (w/2);
     int y = ( height / mainMsg.length) * i;
@@ -194,18 +214,16 @@ void mainMenu()
     buttons.get(i).getCaptionLabel().setFont(btnfont);
   }
   
-  mainBtns = mainMsg.length;
+
+  
+  mainBtns = mainMsg.length + 1;
 }
 
 
-  boolean generated = false;
 
 void startGame()
 {
-//  if (generated == true)
-//  {
-//    generateMap();
-  
+  startGame = true;
     for (Platform wall : platforms) 
     {
       wall.display();
@@ -224,7 +242,7 @@ void startGame()
     ball.display();
     ball.update();
     floor.display();
-    goal.display();
+//    goal.display();
   
     if (keys['A'])
     {
@@ -236,16 +254,9 @@ void startGame()
       Vec2 wind = new Vec2(right, -50);
       ball.applyForce(wind);
     }
-//    generated = false;
-//  }
   
 }
 
-
-
-
-
-int mode = 0; 
 
 //deals with values returned from buttons
 void controlEvent(ControlEvent theEvent)
@@ -257,10 +268,15 @@ void controlEvent(ControlEvent theEvent)
 //hiding and showing buttons
 void hideButton() 
 {
+  //if on main menu
   if (mode == 0) 
   {
+    //hide quit and pause buttons
     buttons.get(0).hide();
-    for (int i = 1; i < buttons.size (); i++)
+    buttons.get(1).hide();
+    
+    //show all other buttons
+    for (int i = 2; i < buttons.size (); i++)
     {
       if (i < mainBtns)
       {
@@ -274,7 +290,7 @@ void hideButton()
   }//end if
   else 
   {
-    for (int i = 1; i < buttons.size (); i++)
+    for (int i = 2; i < buttons.size (); i++)
     {
       if (i < mainBtns)
       {
@@ -282,6 +298,7 @@ void hideButton()
       }//end if
     }//end for
     buttons.get(0).show();
+    buttons.get(1).show();
   }//end else
 }//end hide button
 
@@ -410,20 +427,14 @@ void beginContact(Contact cp)
     Ball m1 = (Ball) o2;
     Platform m2 = (Platform) o1;
 
-    //if Vec2 JumpFinish = box2d.getBodyPixelCoord(m1); , pos.y is < than Vec2 on JumpStart, dont change velocity
-//    Vec2 ballCurrentPos = box2d.getBodyPixelCoord(m1.body);
-    //          Vec2 jump = new Vec2(0, 10000);
-    //m.applyForce(jump);
-
     m1.jump();
-    bounceSound.play();
-    bounceSound.rewind();
     
+    if(startGame)
+    {
+      bounceSound.play();
+      bounceSound.rewind();
+    }
 
-//    clearMap();
-//    box2d.destroyBody(m2.body);
-//    m2.killBody();
-    //    generateMap();
   }//end if ball and platform collision 
 
 
@@ -434,8 +445,12 @@ void beginContact(Contact cp)
     Ball m1 = (Ball) o2;
 
     m1.jump();
-    bounceSound.play();
-    bounceSound.rewind();
+    
+    if(startGame)
+    {
+      bounceSound.play();
+      bounceSound.rewind();
+    }
 
   }
 
@@ -444,12 +459,14 @@ void beginContact(Contact cp)
     o1.getClass() == Ball.class && o2.getClass() == Goal.class)
   {
     Ball m1 = (Ball) o2;
-
-    bell.play();
-    bell.rewind();
+    
+    if(startGame)
+    {
+      bell.play();
+      bell.rewind();
+    }
     
     m1.restart();
-
 
   }
 
@@ -473,8 +490,11 @@ void beginContact(Contact cp)
   }
 }//end beginContact()
 
-void endContact()
+void endContact(Contact cp)
 {
+  
+
+  
 }
 
 
