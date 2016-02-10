@@ -64,6 +64,12 @@ class Ball {
     }
   }
 
+  void restart()
+  {
+    body.setTransform(new Vec2(0, -map( height - 35, 0, height, -(height/20), (height/20) ) ), 0);
+    body.setLinearVelocity(new Vec2(0, 0));
+  }
+  
   void applyForce(Vec2 force) 
   {
     Vec2 pos = body.getWorldCenter();

@@ -29,10 +29,20 @@ ControlP5 controlP5;
 //declaring global variables
 ArrayList<controlP5.Button> buttons = new ArrayList<controlP5.Button>();
 DropdownList ddl;
-PFont btnfont = createFont("Arial", 20, false); // use true/false for smooth/no-smooth
+PFont btnfont = createFont("Arial", 30, false); // use true/false for smooth/no-smooth
 ControlFont btnFont = new ControlFont(btnfont, 241);
 PFont headfont = createFont("Times", 15, false); // use true/false for smooth/no-smooth
 ControlFont headFont = new ControlFont(headfont, 241);
+
+//importing sound library
+import ddf.minim.*;
+ 
+AudioPlayer bounceSound;
+AudioPlayer bell;
+Minim minim;//audio context
+ 
+    
+
 
 
 boolean[] keys = new boolean[512];
@@ -63,6 +73,10 @@ void setup()
 {
   size(1000, 700);
   smooth();
+  
+  minim = new Minim(this);
+  bounceSound = minim.loadFile("bounce.mp3", 5048);
+  bell = minim.loadFile("bell.mp3", 5048);
 
   numOfPlatforms = 7;
   grav = -20;
@@ -107,40 +121,59 @@ background(255);
 //  if (startGame)
 //  {
 //  generated = true;
-    startGame();
+//    startGame();
+//    mainMenu();
 //    generateMap();
 //  }
-//      hideButton();
+  
+  switch (mode)
+  {
+    case 0:
+      mainMenu();
+      break;
+    case 1:
+      startGame();
+      break;
+    case 2:
+      instructions();
+      break;
+    
+  }
+  
+  hideButton();
+
 
 }
 
 int mainBtns;
-
+void instructions()
+{
+  
+}
 void mainMenu()
 {
-  background(0);
+  background(200);
   controlP5 = new ControlP5(this);
 
   //options on buttons in main menu
-  String[] mainMsg = {
-    "Return To Main Menu"
+  String[] mainMsg = 
+  {
+    "Return To Main Menu", "Start Game", "Instructions", "Leaderboards"
   }; 
   
   //add buttons to array list buttons
   int padding = 150;
-  int w = (int)textWidth(mainMsg[0]);
-  int h = 35;
+  int w = (int)textWidth(mainMsg[0]) + padding;
+  int h = 50;
   //return to main menu button. (value 100)
-  buttons.add( controlP5.addButton(mainMsg[0], 1, 0, 0, w, h) );
+  buttons.add( controlP5.addButton(mainMsg[0], 0, 0, 0, (int)textWidth(mainMsg[0]), 20) );
 
   //other options
   for (int i = 1; i < mainMsg.length; i++)
   {
-    w = (int)textWidth(mainMsg[i]) + padding;
-    h = 30;
     int x = width/2 - (w/2);
     int y = ( height / mainMsg.length) * i;
-    buttons.add( controlP5.addButton(mainMsg[i], i + 100, x, y, w, h) );
+    buttons.add( controlP5.addButton(mainMsg[i], i, x, y, w, h) );
     buttons.get(i).getCaptionLabel().setFont(btnfont);
   }
   
@@ -179,16 +212,10 @@ void startGame()
     if (keys['A'])
     {
       Vec2 wind = new Vec2(left, -50);
-      //this removes half gravity 
-      //      body.setLinearVelocity(new Vec2(-10, -5));
-      //      body.setLinearVelocity(new Vec2(-15, -10));
-  
       ball.applyForce(wind);
-  //    m.body.setLinearVelocity(new Vec2(0, grav));
     }
     if (keys['D'])
     {
-  
       Vec2 wind = new Vec2(right, -50);
       ball.applyForce(wind);
     }
@@ -207,8 +234,6 @@ int mode = 0;
 void controlEvent(ControlEvent theEvent)
 {
   mode = (int)theEvent.getValue();
-  if (mode == 0)
-  generateMap();
   println(theEvent.getValue());
 }//control event
 
@@ -232,8 +257,6 @@ void hideButton()
   }//end if
   else 
   {
-        
-
     for (int i = 1; i < buttons.size (); i++)
     {
       if (i < mainBtns)
@@ -257,12 +280,12 @@ void generateMap()
   float diff = 40;
   for (int i = 0; i < numOfPlatforms; i++)
   {
-    
-    a = random(-0.2, 0.2);
-    h = 10;
     w = random(50, 300);
-    y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
     x = random(w/2, 900);
+    y =  (i * (height/ (numOfPlatforms+1) ) + (height/ ( numOfPlatforms + 1 ) ) ) ;
+    h = 10;
+    a = random(-0.2, 0.2);
+    
     if ( x > prevX - diff && x < prevX + diff)
     {
       w += (diff * 2);
@@ -274,25 +297,32 @@ void generateMap()
     prevX = x;
     platforms.add(new Platform(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
 
+//    generateTokens(a, y, w, h, a);
+    
+  }//end for
+}//end generateMap()
+
+void generateTokens(float x, float y, float w, float h, float a)
+{
     int collectable = (int) random(0, 5);
     float tokenFloat = h + 15;
     float tokenW = 30;
     float tokenH = 30;
 
-//    switch (collectable)
-//    {
-//    case 0:
-//      extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
-//      break;
-//    case 1:
-//      lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
-//      break;
-//    default:
-//      break;
-//    }//end switch
-    
-  }//end for
-}//end generateMap()
+    switch (collectable)
+    {
+    case 0:
+      extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
+      break;
+    case 1:
+      lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
+      break;
+    default:
+      break;
+    }//end switch
+  
+}
+
 
 void clearMap()
 {
@@ -369,7 +399,9 @@ void beginContact(Contact cp)
     //m.applyForce(jump);
 
     m1.jump();
-
+    bounceSound.play();
+    bounceSound.rewind();
+    
 
 //    clearMap();
 //    box2d.destroyBody(m2.body);
@@ -385,6 +417,23 @@ void beginContact(Contact cp)
     Ball m1 = (Ball) o2;
 
     m1.jump();
+    bounceSound.play();
+    bounceSound.rewind();
+
+  }
+
+  if (o1.getClass() == Goal.class && o2.getClass() == Ball.class
+    ||
+    o1.getClass() == Ball.class && o2.getClass() == Goal.class)
+  {
+    Ball m1 = (Ball) o2;
+
+    bell.play();
+    bell.rewind();
+    
+    m1.restart();
+
+
   }
 
 
