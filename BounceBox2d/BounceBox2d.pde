@@ -214,7 +214,7 @@ void startGame()
   {
     time--;
   }
-  if (time == 0)
+  if (time < 0)
   {
     mode = 3;
   }

@@ -36,6 +36,7 @@ class Token {
   // Draw the boundary, it doesn't move so we don't have to ask the Body for location
   void display(color col) 
   {
+    Vec2 pos = box2d.getBodyPixelCoord(body);
     this.w = 30;
     this.h = 30;
     fill(col);
@@ -44,7 +45,7 @@ class Token {
     rectMode(CENTER);
     float a = body.getAngle();
     pushMatrix();
-    translate(x, y);
+    translate(pos.x, pos.y);
     rotate(-a);
     rect(0, 0, w, h);
     popMatrix();
@@ -55,25 +56,31 @@ class Token {
 
   void makeBody(float x, float y, float w, float h, float a)
   {
-    // Define the polygon
+    
+    Vec2 center = new Vec2(x, y);
+    // Define a polygon (this is what we use for a rectangle)
     PolygonShape sd = new PolygonShape();
-    // Figure out the box2d coordinates
-    float box2dW = box2d.scalarPixelsToWorld(w/2);
-    float box2dH = box2d.scalarPixelsToWorld(h/2);
-    // We're just a box
-    sd.setAsBox(box2dW, box2dH);
 
+    Vec2[] vertices = new Vec2[4];
+    vertices[0] = box2d.vectorPixelsToWorld(new Vec2(-15, 25));
+    vertices[1] = box2d.vectorPixelsToWorld(new Vec2(15, 25));      //THIS IS WHERE YOU DRAW THE SHAPE!!!!
+    vertices[2] = box2d.vectorPixelsToWorld(new Vec2(15, -25));
+    vertices[3] = box2d.vectorPixelsToWorld(new Vec2(-15, -25));
 
-    // Create the body
+    sd.set(vertices, vertices.length);
+
+    // Define the body and make it from the shape
     BodyDef bd = new BodyDef();
     bd.type = BodyType.DYNAMIC;
-    bd.angle = a;
-    bd.position.set(box2d.coordPixelsToWorld(x, y));
+    bd.position.set(box2d.coordPixelsToWorld(center));
     body = box2d.createBody(bd);
 
-    // Attached the shape to the body using a Fixture
-    body.createFixture(sd, 1);
-//    body.setAngularVelocity(20);
+    body.createFixture(sd, 1.0);
+
+
+    // Give it some initial random velocity
+    body.setLinearVelocity(new Vec2(random(-5, 5), random(2, 5)));
+    body.setAngularVelocity(random(-5, 5));
   }
 }//end Class
 
