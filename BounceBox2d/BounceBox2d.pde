@@ -129,14 +129,25 @@ background(255);
   switch (mode)
   {
     case 0:
+      loop();
       mainMenu();
       break;
     case 1:
+      loop();
       startGame();
       break;
     case 2:
+      loop();
       instructions();
+    case 3:
+      pause();
+      noLoop();
       break;
+      
+    default:
+      gameOver();
+      break;
+      
     
   }
   
@@ -150,6 +161,12 @@ void instructions()
 {
   
 }
+
+void pause()
+{
+  
+}
+
 void mainMenu()
 {
   background(200);
