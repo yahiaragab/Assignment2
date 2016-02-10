@@ -107,30 +107,13 @@ void setup()
 }
 
 int mode = 0; 
-
+float levelTime = 30;
+float time = levelTime;
 void draw()
 {
   box2d.step();
   background(255);
-  //  if (!startGame)
-  //  {
-  //    mainMenu();
-  //  }
-  //  if (keys['S'])
-  //  {
-  //    startGame();
-  //    startGame = true;
-  //    generated = true;
-  //    mode = 1;
-  //  }
-  //  if (startGame)
-  //  {
-  //  generated = true;
-  //    startGame();
-  //    mainMenu();
-  //    generateMap();
-  //  }
-
+  
   switch (mode)
   {
   case 0:
@@ -202,8 +185,6 @@ void mainMenu()
     buttons.get(i).getCaptionLabel().setFont(btnfont);
   }
 
-
-
   mainBtns = mainMsg.length;
 }
 
@@ -214,7 +195,17 @@ void startGame()
   if (!startGame)
   {
     ball.restart();
+    time = levelTime;
     startGame = true;
+  }
+  
+  textSize(15);
+  text(time, width/2, 15);
+  
+  if (frameCount % 60 == 0)
+  {
+    time--;
+    
   }
   
   for (Platform wall : platforms) 
@@ -395,15 +386,6 @@ void beginContact(Contact cp)
   Object o1 = b1.getUserData();
   Object o2 = b2.getUserData();
 
-
-
-
-  //  //Vectors for jumping 
-  //  //have to be inside if
-  //  Vec2 jumpStart = box2d.getBodyPixelCoord(m1.body);
-  //  Vec2 jumpFinish = new Vec2(jumpStart.x, jumpStart.y - jumpHeight); 
-
-  //  Vec2 jump = new Vec2(0, -40000);
 
   //User data doesn't determine TYPE of body
   //If object 1 is a boundary, and object 2 is a Ball, then
