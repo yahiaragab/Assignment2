@@ -66,6 +66,8 @@ class Ball {
     if (pos.y < 0)
     {
       restart();
+      points++;
+      time += 20;
     }
   }
 

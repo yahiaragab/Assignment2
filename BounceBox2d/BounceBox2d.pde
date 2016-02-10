@@ -109,6 +109,8 @@ void setup()
 int mode = 0; 
 float levelTime = 30;
 float time = levelTime;
+int points = 0;
+
 void draw()
 {
   box2d.step();
@@ -133,7 +135,7 @@ void draw()
     break;
 
   case 3:
-
+    
 
   default:
     gameOver();
@@ -154,6 +156,7 @@ void pause()
 
 void gameOver()
 {
+  
 }
 
 void mainMenu()
@@ -196,16 +199,22 @@ void startGame()
   {
     ball.restart();
     time = levelTime;
+    points = 0;
     startGame = true;
   }
   
   textSize(15);
   text(time, width/2, 15);
+  text(points, 3*width/4, 15);
   
   if (frameCount % 60 == 0)
   {
     time--;
     
+  }
+  if (time == 0)
+  {
+    gameOver();
   }
   
   for (Platform wall : platforms) 
