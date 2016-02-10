@@ -9,8 +9,7 @@ class LessTime extends Token
   {
     super(x, y, w, h, a);
     body.setUserData(this);
-    col = color(50, 100, 100);
-
+    col = color(random(100, 255), random(0, 255), random(0, 255));
   }
 
   // Draw the boundary, it doesn't move so we don't have to ask the Body for location

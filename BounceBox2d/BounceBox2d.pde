@@ -1,15 +1,3 @@
-/*
--Make a main GameObject abstract class?
- 
- -Boundry should be changed to Platform, with a main abstract platform class, falling, mooving, and fixed subclasses
- -Ball should become Ball
- 
- -Moving left and right has to work with a wind-like force, and not a change in velocity
- 
- -Make it look good at the end
- 
- 
- */
 
 //importing all box2d files needed
 import shiffman.box2d.*;
@@ -129,9 +117,6 @@ void draw()
     instructions();
     break;
 
-  case 3:
-    gameOver();
-    break;
 
   default:
 
@@ -173,7 +158,7 @@ void mainMenu()
   //options on buttons in main menu
   String[] mainMsg = 
   {
-    "QUIT", "Start Game", "Instructions", "Leaderboards"
+    "QUIT", "Start Game", "Instructions"
   }; 
 
   //add buttons to array list buttons
