@@ -61,7 +61,6 @@ class Ball {
     if (pos.x < 0)
     {
       body.setTransform( new Vec2( -x, -y ), 0 );
-
     }
 
     if (pos.y < 0)
@@ -70,20 +69,15 @@ class Ball {
       points++;
       time += 20;
       Vec2 platPos;
-        
-        for (Platform plat : platforms) 
-        {
-          platPos = box2d.getBodyPixelCoord(plat.body);
-    
-          plat.body.setTransform(new Vec2(random(-50, 50), map(platPos.y, 0, height, -(height/20), (height/20) )), random(-.2, .2) );
-          plat.display();
-  //        plat.killBody();
-  //        platforms.remove(plat.body);
-        }
 
+      for (Platform plat : platforms) 
+      {
+        platPos = box2d.getBodyPixelCoord(plat.body);
+
+        plat.body.setTransform(new Vec2(random(-50, 50), -map(platPos.y, 0, height, -(height/20), (height/20) )), random(-.2, .2) );
+        plat.display();
+      }
     }
-    
-    
   }
 
   void restart()
