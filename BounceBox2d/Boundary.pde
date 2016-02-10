@@ -10,8 +10,8 @@ class Boundary {
   // But we also have to make a body for box2d to know about it
   Body body;
 
- Boundary(float x,float y, float w, float h, float a) 
- {
+  Boundary(float x, float y, float w, float h, float a) 
+  {
     this.x = x;
     this.y = y;
     this.w = w;
@@ -19,7 +19,7 @@ class Boundary {
 
     //define the body
     makeBody(x, y, w, h, a);
-    
+
     //set user data
     body.setUserData(this);
   }
@@ -41,13 +41,13 @@ class Boundary {
     rectMode(CENTER);
     float a = body.getAngle();
     pushMatrix();
-    translate(x,y);
+    translate(x, y);
     rotate(-a);
-    rect(0,0,w,h);
+    rect(0, 0, w, h);
     popMatrix();
   }
 
-  
+
   void makeBody(float x, float y, float w, float h, float a)
   {
     // Define the polygon
@@ -55,7 +55,7 @@ class Boundary {
     // Figure out the box2d coordinates
     float box2dW = box2d.scalarPixelsToWorld(w/2);
     float box2dH = box2d.scalarPixelsToWorld(h/2);
-    
+
     // We're just a box
     sd.setAsBox(box2dW, box2dH);
 
@@ -63,15 +63,11 @@ class Boundary {
     BodyDef bd = new BodyDef();
     bd.type = BodyType.STATIC;
     bd.angle = a;
-    bd.position.set(box2d.coordPixelsToWorld(x,y));
+    bd.position.set(box2d.coordPixelsToWorld(x, y));
     body = box2d.createBody(bd);
-    
+
     // Attached the shape to the body using a Fixture
-    body.createFixture(sd,1);
-    
+    body.createFixture(sd, 1);
   }
-
-
 }//end Class
-
 

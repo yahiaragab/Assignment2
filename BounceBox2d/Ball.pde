@@ -62,23 +62,17 @@ class Ball {
     {
       body.setTransform( new Vec2( -x, -y ), 0 );
     }
-    
+
     if (pos.y < 0)
     {
       restart();
       points++;
       time += 20;
-      Vec2 platPos;
-//      for (Platform plat : platforms) 
+//      Vec2 platPos;
+//      for (int i = 0; i < platforms.size (); i++)
 //      {
-////        platPos = box2d.getBodyPixelCoord(plat.body);
-////
-////        plat.body.setTransform(new Vec2(random(-50, 50), map(platPos.y, 0, height, -(height/20), (height/20) )), random(-.2, .2) );
-////        plat.display();
-//plat.killBody();
-//platforms.remove(plat.body);
+//        platforms.get(i).update();
 //      }
-//      generateMap();
     }
   }
 
@@ -87,7 +81,7 @@ class Ball {
     body.setTransform(new Vec2(0, -map( height - 35, 0, height, -(height/20), (height/20) ) ), 0);
     body.setLinearVelocity(new Vec2(0, 0));
   }
-  
+
   void applyForce(Vec2 force) 
   {
     Vec2 pos = body.getWorldCenter();

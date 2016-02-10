@@ -104,11 +104,10 @@ void setup()
   //Y - h/2
   //  platforms.add(new Platform(width/2, height - 5, width, 10, 0)); 
   generateMap();
-  output = createWriter("leaderboard.txt");
 }
 
 int mode = 0; 
-float levelTime = 5;
+float levelTime = 30;
 float time = levelTime;
 int points = 0;
 
@@ -116,7 +115,7 @@ void draw()
 {
   box2d.step();
   background(255);
-  
+
   switch (mode)
   {
   case 0:
@@ -139,7 +138,7 @@ void draw()
     gameOver();
 
   default:
-    
+
     break;
   }
 
@@ -154,7 +153,6 @@ void instructions()
 void pause()
 {
 }
-PrintWriter output;
 
 void gameOver()
 {
@@ -162,7 +160,6 @@ void gameOver()
   textSize(70);
   textAlign(CENTER);
   text("Final Score: " + points, width/2, height/4);
-  output.println(points);
 }
 
 void mainMenu()
@@ -208,29 +205,23 @@ void startGame()
     points = 0;
     startGame = true;
   }
-  
+
   textSize(15);
   text(time, width/2, 15);
   text(points, 3*width/4, 15);
-  
+
   if (frameCount % 60 == 0)
   {
     time--;
-    
   }
   if (time == 0)
   {
-mode = 3;
-}
-  
+    mode = 3;
+  }
+
   for (Platform wall : platforms) 
   {
     wall.display();
-  }
-
-  for (ExtraTime extra : extratime) 
-  {
-    extra.display();
   }
 
   for (LessTime less : lesstime) 
@@ -316,39 +307,41 @@ void generateMap()
     h = 10;
     a = random(-0.2, 0.2);
 
-//    if ( x > prevX - diff && x < prevX + diff)
-//    {
-//      w += (diff * 2);
-//      if (x > 900)
-//      {
-//        x -= diff * 3;
-//      }
-//    }
-//    prevX = x;
+    //    if ( x > prevX - diff && x < prevX + diff)
+    //    {
+    //      w += (diff * 2);
+    //      if (x > 900)
+    //      {
+    //        x -= diff * 3;
+    //      }
+    //    }
+    //    prevX = x;
     platforms.add(new Platform(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
 
-    //    generateTokens(a, y, w, h, a);
+    generateTokens(x, y, w, h, a);
   }//end for
 }//end generateMap()
 
 void generateTokens(float x, float y, float w, float h, float a)
 {
-  int collectable = (int) random(0, 5);
+  int collectable = (int) random(0, 2);
   float tokenFloat = h + 15;
   float tokenW = 30;
   float tokenH = 30;
-
-  switch (collectable)
-  {
-  case 0:
-    extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
-    break;
-  case 1:
+  x += random(0, w/2) * random(-1, 1);
+  //  switch (collectable)
+  //  {
+  //  case 0:
+  //    extratime.add(new ExtraTime(x, y - tokenFloat, tokenW, tokenH, a));
+  //    break;
+  //  case 1:
+  //    lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
+  //    break;
+  //  default:
+  //    break;
+  //  }//end switch
+  if (collectable == 1)
     lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
-    break;
-  default:
-    break;
-  }//end switch
 }
 
 
@@ -457,8 +450,6 @@ void beginContact(Contact cp)
     o1.getClass() == Ball.class && o2.getClass() == ExtraTime.class)
   {
     Ball m1 = (Ball) o2;
-
-    m1.jump();
   }
 
   if (o1.getClass() == LessTime.class && o2.getClass() == Ball.class
@@ -466,8 +457,7 @@ void beginContact(Contact cp)
     o1.getClass() == Ball.class && o2.getClass() == LessTime.class)
   {
     Ball m1 = (Ball) o2;
-
-    m1.jump();
+    time -= 5;
   }
 }//end beginContact()
 

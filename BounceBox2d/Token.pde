@@ -39,8 +39,8 @@ class Token {
     this.w = 30;
     this.h = 30;
     fill(col);
-    stroke(col);
-    strokeWeight(1);
+    stroke(0, 0, 100);
+    strokeWeight(2);
     rectMode(CENTER);
     float a = body.getAngle();
     pushMatrix();
