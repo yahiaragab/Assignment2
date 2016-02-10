@@ -11,10 +11,10 @@ abstract class GameObject
   abstract void makeBody(float x, float y, float w, float h, float a);
   
 //    // This function removes the particle from the box2d world
-  abstract void killBody();
-  {
-    box2d.destroyBody(body);
-  }
+//  abstract void killBody();
+//  {
+//    box2d.destroyBody(body);
+//  }
 
 ////  // Is the particle ready for deletion?
 //  abstract boolean done(); 

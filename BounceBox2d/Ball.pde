@@ -34,7 +34,7 @@ class Ball {
     // Let's find the screen position of the particle
     Vec2 pos = box2d.getBodyPixelCoord(body);
     // Is it off the bottom of the screen?
-    if (pos.y > height) {
+    if (pos.y < 0) {
       killBody();
       return true;
     }
@@ -68,21 +68,17 @@ class Ball {
       restart();
       points++;
       time += 20;
-      Vec2 platPos;
-
-      for (Platform plat : platforms) 
-      {
-        platPos = box2d.getBodyPixelCoord(plat.body);
-
-        plat.body.setTransform(new Vec2(random(-50, 50), -map(platPos.y, 0, height, -(height/20), (height/20) )), random(-.2, .2) );
-        plat.display();
-      }
+      
+      newMap();
     }
   }
 
   void restart()
   {
-    body.setTransform(new Vec2(0, -map( height - 35, 0, height, -(height/20), (height/20) ) ), 0);
+    Vec2 posx = box2d.getBodyPixelCoord(body);
+    float x = map( posx.x, 0, width, -(width/20), (width/20) );
+    float y = -map( height - 35, 0, height, -(height/20), (height/20) );
+    body.setTransform(new Vec2(x, y), 0);
     body.setLinearVelocity(new Vec2(0, 0));
   }
 
@@ -95,7 +91,6 @@ class Ball {
 
   void jump()
   {
-    //    body.setLinearVelocity(new Vec2(0, movVel));
     body.applyLinearImpulse( new Vec2(0, -jumpHeight), body.getPosition(), true );
   }
 

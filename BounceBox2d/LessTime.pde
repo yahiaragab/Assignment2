@@ -13,7 +13,6 @@ class LessTime extends Token
 
   }
 
-
   // Draw the boundary, it doesn't move so we don't have to ask the Body for location
   void display() 
   {

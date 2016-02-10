@@ -50,7 +50,7 @@ boolean[] keys = new boolean[512];
 
 Ball ball;
 Floor floor;
-Goal goal;
+
 
 // A list we'll use to track fixed objects
 ArrayList<Platform> platforms;
@@ -118,6 +118,7 @@ void draw()
   switch (mode)
   {
   case 0:
+
     startGame = false;
     loop();
     mainMenu();
@@ -135,6 +136,7 @@ void draw()
 
   case 3:
     gameOver();
+    break;
 
   default:
 
@@ -159,6 +161,10 @@ void gameOver()
   textSize(70);
   textAlign(CENTER);
   text("Final Score: " + points, width/2, height/4);
+    textSize(30);
+
+  text("Press the 'QUIT' button at the top left of the screent to play again! ", width/2, 3* height/4);
+
 }
 
 void mainMenu()
@@ -171,7 +177,7 @@ void mainMenu()
   //options on buttons in main menu
   String[] mainMsg = 
   {
-    "Quit", "Start Game", "Instructions", "Leaderboards"
+    "QUIT", "Start Game", "Instructions", "Leaderboards"
   }; 
 
   //add buttons to array list buttons
@@ -198,6 +204,7 @@ void startGame()
 {
   if (!startGame)
   {
+    newMap();
     ball.restart();
     time = levelTime;
     points = 0;
@@ -217,7 +224,7 @@ void startGame()
     mode = 3;
   }
 
-  for (int i = 0; i < platforms.size(); i++) 
+  for (int i = 0; i < platforms.size (); i++) 
   {
     platforms.get(i).display();
   }
@@ -230,7 +237,7 @@ void startGame()
   ball.display();
   ball.update();
   floor.display();
-  
+
   //    goal.display();
 
   if (keys['A'])
@@ -246,47 +253,6 @@ void startGame()
 }
 
 
-//deals with values returned from buttons
-void controlEvent(ControlEvent theEvent)
-{
-  mode = (int)theEvent.getValue();
-  println(theEvent.getValue());
-}//control event
-
-//hiding and showing buttons
-void hideButton() 
-{
-  //if on main menu
-  if (mode == 0) 
-  {
-    //hide quit
-    buttons.get(0).hide();
-
-    //show all other buttons
-    for (int i = 1; i < buttons.size (); i++)
-    {
-      if (i < mainBtns)
-      {
-        buttons.get(i).show();
-      }//end if
-      else
-      {
-        buttons.get(i).hide();
-      }//end else
-    }//end for
-  }//end if
-  else 
-  {
-    for (int i = 1; i < buttons.size (); i++)
-    {
-      if (i < mainBtns)
-      {
-        buttons.get(i).hide();
-      }//end if
-    }//end for
-    buttons.get(0).show();
-  }//end else
-}//end hide button
 
 
 
@@ -316,18 +282,26 @@ void generateMap()
     //    }
     //    prevX = x;
     platforms.add(new Platform(x, y, w, h, a)); //X is width/2 not 0 because object is dealt with from its CENTER
-
-    generateTokens(x, y, w, h, a);
+    //every 3 points generate less time tokens
+    generateTokens(i);
   }//end for
 }//end generateMap()
 
-void generateTokens(float x, float y, float w, float h, float a)
+void generateTokens(int i)
 {
+  float x, y, w, h, a;
+
+  w = random(100, 350)+ (40 * random(-1, 1) );
+  x = random(w/2, 900) + (40 * random(-1, 1) );
+  y =  random(0, height - 200) ;
+  h = 10;
+  a = random(-0.2, 0.2);
+
   int collectable = (int) random(0, 2);
   float tokenFloat = h + 15;
   float tokenW = 30;
   float tokenH = 30;
-  
+
   x += random(0, w/2) * random(-1, 1);
   //  switch (collectable)
   //  {
@@ -340,36 +314,42 @@ void generateTokens(float x, float y, float w, float h, float a)
   //  default:
   //    break;
   //  }//end switch
-  if (collectable == 1)
-    lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
+
+  //generate one less time token every 2 levels
+  if (i == 1)
+  {
+  lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
+  lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
+  lesstime.add(new LessTime(x, y - tokenFloat, tokenW, tokenH, a));
+
+  }
 }
 
 
-void clearMap()
+void newMap()
 {
 
-  for (int i = 0; i < platforms.size (); i++)
-  {
+  Vec2 platPos;
 
-    platforms.get(i).killBody();
-    platforms.remove(i);
-    //    box2d.destroyBody(b.body);
+  for (Platform plat : platforms) 
+  {
+    platPos = box2d.getBodyPixelCoord(plat.body);
+
+    plat.body.setTransform(new Vec2(random(-50, 50), -map(platPos.y, 0, height, -(height/20), (height/20) )), random(-.2, .2) );
+    plat.display();
   }
 
-  for (int i = 0; i < extratime.size (); i++)
+
+  Vec2 lessPos;
+  for (int i = 0; i < lesstime.size (); i++) 
   {
-
-    extratime.get(i).killBody();
-    extratime.remove(i);
-    //    box2d.destroyBody(b.body);
-  }
-
-  for (int i = 0; i < lesstime.size (); i++)
-  {
-
-    lesstime.get(i).killBody();
-    lesstime.remove(i);
-    //    box2d.destroyBody(b.body);
+    lessPos = box2d.getBodyPixelCoord(lesstime.get(i).body);
+    if (points % 2 == 0)
+    {
+      generateTokens(i);
+    }
+    lesstime.get(i).body.setTransform(new Vec2(random(-50, 50), random(-35, 35) ), random(-.2, .2) ) ;
+    lesstime.get(i).display();
   }
 }//end clearMap()
 
@@ -429,21 +409,6 @@ void beginContact(Contact cp)
     }
   }
 
-  if (o1.getClass() == Goal.class && o2.getClass() == Ball.class
-    ||
-    o1.getClass() == Ball.class && o2.getClass() == Goal.class)
-  {
-    Ball m1 = (Ball) o2;
-
-    if (startGame)
-    {
-      bell.play();
-      bell.rewind();
-    }
-
-    m1.restart();
-  }
-
 
   if (o1.getClass() == ExtraTime.class && o2.getClass() == Ball.class
     ||
@@ -464,6 +429,50 @@ void beginContact(Contact cp)
 void endContact(Contact cp)
 {
 }
+
+
+//deals with values returned from buttons
+void controlEvent(ControlEvent theEvent)
+{
+  mode = (int)theEvent.getValue();
+  println(theEvent.getValue());
+}//control event
+
+
+//hiding and showing buttons
+void hideButton() 
+{
+  //if on main menu
+  if (mode == 0) 
+  {
+    //hide quit
+    buttons.get(0).hide();
+
+    //show all other buttons
+    for (int i = 1; i < buttons.size (); i++)
+    {
+      if (i < mainBtns)
+      {
+        buttons.get(i).show();
+      }//end if
+      else
+      {
+        buttons.get(i).hide();
+      }//end else
+    }//end for
+  }//end if
+  else 
+  {
+    for (int i = 1; i < buttons.size (); i++)
+    {
+      if (i < mainBtns)
+      {
+        buttons.get(i).hide();
+      }//end if
+    }//end for
+    buttons.get(0).show();
+  }//end else
+}//end hide button
 
 
 void keyPressed()
