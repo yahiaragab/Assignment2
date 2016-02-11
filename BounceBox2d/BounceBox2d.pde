@@ -116,7 +116,9 @@ void draw()
     loop();
     instructions();
     break;
-
+  case 3:
+    gameOver();
+    break;
 
   default:
 
